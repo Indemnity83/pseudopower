@@ -1,3 +1,9 @@
+Release 1.2.1 2009-08-26
+	* Added profession specific enchants
+	* Fixed bug where hit only item caused PP to not display
+	* Fixed gem suggestion language (Match Gems => Match Sockets)
+	* Fixed bug when using /pp with zero hit
+
 Release 1.2.0 2009-08-26
 	* Added functions to calculate total PP
 	* Added /pp & /pseudopower to display total PP
