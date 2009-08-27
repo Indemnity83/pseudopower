@@ -1,4 +1,4 @@
--- $Id: utf8.lua 147 2007-01-04 00:57:00Z pasta $
+-- $Id$
 --
 -- Provides UTF-8 aware string functions implemented in pure lua:
 -- * string.utf8len(s)
