@@ -1,3 +1,5 @@
+local REV = "$Rev$"
+
 ---------------
 -- Libraries --
 ---------------
@@ -18,7 +20,7 @@ local white = "|cffffffff"
 -----------------
 -- Multiplyers -- 
 -----------------
--- Scaled from http://code.google.com/p/simulationcraft/wiki/SampleOutputPTR_Details
+-- Scaled from http://code.google.com/p/simulationcraft/wiki/SampleOutputT8_Details
 local SPELL_POWER = 1.00
 local SPELL_HIT = 1.35
 local SPELL_CRIT = 0.72
@@ -51,6 +53,10 @@ end
 ---------------------
 SLASH_PP1, SLASH_PP2 = '/pp', '/pseudopower'
 function SlashCmdList.PP(msg, editbox)
+	-- Debug info, print the file revision
+	debugPrint(REV)
+
+	-- Spit out the total PP for this user
 	pp = GetPPScore()
 	local dps = string.format("%d", pp * 1.56)	
 	print("Total PseudoPower: "..pp.." (approx. "..dps.." peak dps)")

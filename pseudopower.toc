@@ -3,6 +3,7 @@
 ## Notes: Calculate Psudopower ratings for gear
 ## Author: Indemnity83
 ## Version: 1.2.3
+## Revision: $Rev$
 
 #UTF8
 UTF8\utf8data.lua
