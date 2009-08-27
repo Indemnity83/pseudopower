@@ -52,7 +52,7 @@ end
 SLASH_PP1, SLASH_PP2 = '/pp', '/pseudopower'
 function SlashCmdList.PP(msg, editbox)
 	pp = GetPPScore()
-	local dps = string.format("%d", pp * 1.575)	
+	local dps = string.format("%d", pp * 1.56)	
 	print("Total PseudoPower: "..pp.." (approx. "..dps.." peak dps)")
 end
 
@@ -122,14 +122,15 @@ local CUSTOM_ITEM_DATA = {
 	[40255] = { 128, 0, 0, 0, 0, 71 },	-- Dying Curse
 	
 	-- On Use (assumed to be used every cooldown)
-	[48724] = { 100, 0, 0, 0, 128, 0 }, 	-- Talisman of Resurgence
+	[48724] = { 100, 0, 0, 0, 128, 0 }, -- Talisman of Resurgence
 	[48722] = { 0, 0, 85, 0, 0, 128 }, 	-- Shard of the Crystal Heart
 	
 	-- Stacking Buff (assumed to be full stacks)
-	[40432] = { 200, 0, 0, 0, 0, 0 },		-- Illustration of the Dragon Soul
+	[40432] = { 200, 0, 0, 0, 0, 0 },	-- Illustration of the Dragon Soul
+	[47316] = { 309, 0, 0, 0, 0, 0 }, 	-- Reign of the Dead (assuming a crit every 2.5 seconds)
 	
 	-- Meta Gems (these are somewhat hacked)
-	[41285] = { 70, 0, 0, 0, 0, 0 },		-- Chaotic Skyflare Diamond	
+	[41285] = { 70, 0, 0, 0, 0, 0 },	-- Chaotic Skyflare Diamond	
 	
 }
 
