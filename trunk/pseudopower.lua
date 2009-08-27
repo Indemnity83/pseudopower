@@ -17,6 +17,17 @@ local purple = "|cffff00ff"
 
 
 -----------------
+-- Multiplyers -- 
+-----------------
+local SPELL_POWER = 1
+local SPELL_HIT = 1.53
+local SPELL_CRIT = 0.72
+local SPELL_HASTE = 0.68
+local BONUS_INT = 0.22
+local BONUS_SPI = 0.25	
+	
+
+-----------------
 -- Debug Tools --
 -----------------
 local function debugPrint(text)
@@ -35,10 +46,12 @@ local function OnTooltipSetItem(self)
  		local pp, pph = GetValue(Item)
  		
  		if pp then
-			if pph > pp then
-     			self:AddLine(L[white.."PseudoPower:|r %d (%d)"]:format(pp, pph))		
-        	else 
-				self:AddLine(L[white.."PseudoPower:|r %d"]:format(pp))
+ 			if pp > 0 then
+				if pph > pp then
+     				self:AddLine(L[white.."PseudoPower:|r %d (%d)"]:format(pp, pph))		
+        		else 
+					self:AddLine(L[white.."PseudoPower:|r %d"]:format(pp))
+				end
 			end
 		end		
 	end
@@ -53,32 +66,7 @@ if (class == "PRIEST") then
 	-- GameTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)
 	-- ItemRefTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)	
 	TipHooker:Hook(OnTooltipSetItem, "item")
-	
-	-- Multiplyers
-	-- Weights :  Int=0.35  Spi=0.39  SP=1.56  Hit=2.39  Crit=1.12  Haste=1.07
-	local SPELL_POWER = 1
-	local SPELL_HIT = 1.53
-	local SPELL_CRIT = 0.72
-	local SPELL_HASTE = 0.68
-	local BONUS_INT = 0.22
-	local BONUS_SPI = 0.25	
 end 
-
-if (class == "MAGE") then
-	-- GameTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)
-	-- ItemRefTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)	
-	TipHooker:Hook(OnTooltipSetItem, "item")
-	
-	-- Multiplyers
-	--  Weights :  Int=0.58  Spi=0.60  SP=1.40  Hit=2.88  Crit=0.85  Haste=1.66
-	local SPELL_POWER = 1.40
-	local SPELL_HIT = 2.88
-	local SPELL_CRIT = 0.85
-	local SPELL_HASTE = 1.66
-	local BONUS_INT = 0.58
-	local BONUS_SPI = 0.60
-end 
-
 
 
 ------------------------------------------------------
