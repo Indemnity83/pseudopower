@@ -40,7 +40,7 @@ local mGem = StatLogic:GetGemID(41285) -- Chaotic Skyflare Diamond (+21 Crit & 3
 -----------------
 local function debugPrint(text)
 	if DEBUG == true then
-		print(text)
+		print(white.."PP:|r "..text)
 	end
 end
 
@@ -51,7 +51,8 @@ end
 SLASH_PP1, SLASH_PP2 = '/pp', '/pseudopower'
 function SlashCmdList.PP(msg, editbox)
 	pp = GetPPScore()
-	print("Total PseudoPower: "..pp)
+	local dps = string.format("%d", pp * 1.575)	
+	print("Total PseudoPower: "..pp.." (approx. "..dps.." peak dps)")
 end
 
 
@@ -68,7 +69,7 @@ local function OnTooltipSetItem(self)
 			self:AddLine(" ")
 		 		
  			-- Display the PseudoPower of the item as-is
- 			if pp > 0 then
+ 			if pp then
  				if pph > pp then 
  					self:AddLine(white.."PseudoPower:|r "..pp.." ("..pph.." w/ hit)")
  				else 
@@ -179,6 +180,9 @@ function GetPPScore()
 	local sumPP = 0
 	local sumPPH = 0
 	local sumHIT = 0
+	local pp = 0
+	local pph = 0
+	local hit = 0
 	local hitCap = 289
 	
 	-- Fix hitCap if we are a Draenei 
@@ -214,30 +218,48 @@ end
 ----------------------------------------
 function OptimalEnchant(itemSlot)
 
+	local isEnchanter = false
+	local isTailor = false
+	local isEngineer = false
+	local isLeatherworker = false
+
+	-- Determine the available skills
+	for skillIndex = 1, GetNumSkillLines() do
+		skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier,
+		skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
+		skillDescription = GetSkillLineInfo(skillIndex)
+		if isHeader == nil then
+			if skillName == "Enchanting" then isEnchanter = true end
+			if skillName == "Tailoring" then isTailor = true end
+			if skillName == "Engineering" then isEngineer = true end
+			if skillName == "Leatherworking" then isLeatherworker = true end
+		end
+	end
+		
+
 	if     itemSlot == "INVTYPE_HEAD"		then return "Arcanum of Burning Mysteries", 3820
     elseif itemSlot == "INVTYPE_SHOULDER"	then return "Greater Inscription of the Storm", 3810
     elseif itemSlot == "INVTYPE_CHEST" 		then return "Enchant Chest - Powerful Stats", 3832
-    elseif itemSlot == "INVTYPE_ROBE" 	then return "Enchant Chest - Powerful Stats", 3832
-    elseif itemSlot == "INVTYPE_WAIST" 	then return "Eternal Belt Buckle", 3729
-    elseif itemSlot == "INVTYPE_LEGS" 	then return "Brilliant Spellthread", 3719
-    elseif itemSlot == "INVTYPE_FEET" 	then 
-    	-- Engineering
-    	return "Enchant Boots - Icewalker", 3826
-    elseif itemSlot == "INVTYPE_HAND" 	then 
-    	-- Engineering
-    	return "Enchant Gloves - Exceptional Spellpower", 3246 -- Everyone
+    elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Powerful Stats", 3832
+    elseif itemSlot == "INVTYPE_WAIST" 		then return "Eternal Belt Buckle", 3729
+    elseif itemSlot == "INVTYPE_LEGS" 		then return "Brilliant Spellthread", 3719
+    elseif itemSlot == "INVTYPE_FEET" 		then 
+    	if isEngineer then return "Nitro Boosts", 3606
+    	else return "Enchant Boots - Icewalker", 3826 end
+    elseif itemSlot == "INVTYPE_HAND" 		then 
+    	if isEngineer then return "Hyperspeed Accelerators", 3604
+    	else return "Enchant Gloves - Exceptional Spellpower", 3246 end
     elseif itemSlot == "INVTYPE_FINGER" 	then 
-    	--return "Enchant Ring - Greater Spellpower", 3840 -- Enchanting
-    	return nil, nil
-    elseif itemSlot == "INVTYPE_CLOAK" 	then 
-    	-- Tailoring
-    	-- Engineering
-    	return "Enchant Cloak - Greater Speed", 3831 -- Everyone
+    	if isEnchanter then return "Enchant Ring - Greater Spellpower", 3840 end
+    elseif itemSlot == "INVTYPE_CLOAK" 		then 
+    	if isTailor then return "Lightweave Embroidery", 3722
+    	elseif isEngineer then return "Springy Arachnoweave", 3859
+    	else return "Enchant Cloak - Greater Speed", 3831 end
     elseif itemSlot == "INVTYPE_WEAPON" 	then return "Enchant Weapon - Mighty Spellpower", 3855
-    elseif itemSlot == "INVTYPE_2HWEAPON" then return "Enchant Staff - Greater Spellpower", 3854
-    elseif itemSlot == "INVTYPE_WRIST" 	then 
-		-- Leatherworking
-    	return "Enchant Bracers - Superior Spellpower", 2332 -- Everyone
+    elseif itemSlot == "INVTYPE_2HWEAPON" 	then return "Enchant Staff - Greater Spellpower", 3854
+    elseif itemSlot == "INVTYPE_WRIST" 		then 
+		if isLeatherworker then return "Fur Lining - Spell Power", 3758
+    	else return "Enchant Bracers - Superior Spellpower", 2332 end
 	else									 return nil, nil	
 	end
 
@@ -270,7 +292,7 @@ function OptimalItem(item)
 		optimalString = optimalString.." w/ All Red Gems"
 	else 
 		link = matchedLink 
-		optimalString = optimalString.." & Match Gems"
+		optimalString = optimalString.." & Match Sockets"
 	end
 	
 	-- Return the Optimized item
