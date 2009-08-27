@@ -18,12 +18,13 @@ local white = "|cffffffff"
 -----------------
 -- Multiplyers -- 
 -----------------
-local SPELL_POWER = 1
-local SPELL_HIT = 1.53
+-- Scaled from http://code.google.com/p/simulationcraft/wiki/SampleOutputPTR_Details
+local SPELL_POWER = 1.00
+local SPELL_HIT = 1.35
 local SPELL_CRIT = 0.72
-local SPELL_HASTE = 0.68
+local SPELL_HASTE = 0.64
 local BONUS_INT = 0.22
-local BONUS_SPI = 0.25	
+local BONUS_SPI = 0.26
 
 
 ----------
@@ -31,7 +32,7 @@ local BONUS_SPI = 0.25
 ----------
 local rGem = StatLogic:GetGemID(40113) -- Runed Cardinal Ruby (+23 SP)
 local bGem = StatLogic:GetGemID(40133) -- Purified Dreadstone (+12 SP & +10 Spi)
-local yGem = StatLogic:GetGemID(40152) -- Potent Flawless Ametrine (+12 SP & +10 Crit)
+local yGem = StatLogic:GetGemID(40152) -- Potent Ametrine (+12 SP & +10 Crit)
 local mGem = StatLogic:GetGemID(41285) -- Chaotic Skyflare Diamond (+21 Crit & 3% Crit Dmg)
 	
 	
@@ -40,7 +41,7 @@ local mGem = StatLogic:GetGemID(41285) -- Chaotic Skyflare Diamond (+21 Crit & 3
 -----------------
 local function debugPrint(text)
 	if DEBUG == true then
-		print(white.."PP:|r "..text)
+		print(green.."PP:|r "..text)
 	end
 end
 
@@ -88,7 +89,7 @@ local function OnTooltipSetItem(self)
 	        	end
 				
 				-- Show optimizations
-				self:AddLine(red..optimalString)		
+				self:AddLine(optimalString)		
 			end
 			
 			-- repaint tooltip
@@ -114,13 +115,21 @@ end
 -- Used to display PP values for special case items --
 ------------------------------------------------------
 local CUSTOM_ITEM_DATA = {
+	-- [Item ID] = { sp, crit, haste, spi, int, hit } only use whole numbers
+	
 	-- Equip Chance Items
-	[39229] = { 147.8, 147.8, 0 },
-	[40255] = { 148, 241.01, 0 },
+	[40682] = { 112, 84, 0, 0, 0, 0 },	-- Sundial of the Exiled
+	[40255] = { 128, 0, 0, 0, 0, 71 },	-- Dying Curse
 	
+	-- On Use (assumed to be used every cooldown)
+	[48724] = { 100, 0, 0, 0, 128, 0 }, 	-- Talisman of Resurgence
+	[48722] = { 0, 0, 85, 0, 0, 128 }, 	-- Shard of the Crystal Heart
 	
-	-- Meta Gems
-	[41285] = { 70, 70, 0 },
+	-- Stacking Buff (assumed to be full stacks)
+	[40432] = { 200, 0, 0, 0, 0, 0 },		-- Illustration of the Dragon Soul
+	
+	-- Meta Gems (these are somewhat hacked)
+	[41285] = { 70, 0, 0, 0, 0, 0 },		-- Chaotic Skyflare Diamond	
 	
 }
 
@@ -143,15 +152,16 @@ function GetValue(item)
 	if not itemID then return end
 	itemID = tonumber(itemID)
 
+	local statData = {}
+	
 	-- Check to see if there is custom data for this item ID
 	if CUSTOM_ITEM_DATA[itemID] then
-		pp, pph, hit = unpack(CUSTOM_ITEM_DATA[itemID])
-		return pp, pph, hit
-	end
-	
-	-- Build Summary Table
-	local statData = {}
-	StatLogic:GetSum(itemLink, statData)
+		statData["SPELL_DMG"], statData["SPELL_CRIT_RATING"], statData["SPELL_HASTE_RATING"], 
+		statData["SPI"], statData["INT"], statData["SPELL_HIT_RATING"] = unpack(CUSTOM_ITEM_DATA[itemID])
+	else 	
+		-- Build Summary Table using LibStatLogic
+		StatLogic:GetSum(itemLink, statData)
+	end 
 			
 	-- Do the math for base PsudoPower
 	local pp = 0
@@ -199,11 +209,14 @@ function GetPPScore()
 			sumPP = sumPP + pp
 			sumPPH = sumPPH + pph
 			sumHIT = sumHIT + hit
+			
+			debugPrint(itemLink.." "..pp.." ("..pph.." w/ hit)")
 		end
 	end 
 	
-	if hit > hitCap then
+	if sumHIT < hitCap then
 		-- We are below hit cap, everything counts
+		debugPrint("Your current gear setup is not optimal for raiding, you need "..(hitCap - sumHIT).." more hit")
 		return sumPPH
 	else
 		-- We are at or above the hit cap, so we need to calculate the PP and ignore
@@ -279,20 +292,37 @@ function OptimalItem(item)
 	local eName, eID = OptimalEnchant(ItemSlot)
 	if eID then link = StatLogic:ModEnchantGem(link,eID) end
 	
+	-- Check if the optimal enchant, is the current enchant
+	linkEnchant = StatLogic:ModEnchantGem(item, eID)
+		
 	local optimalString = ""
-	if eName then optimalString = eName end
+	if eName then	
+		if linkEnchant == item then optimalString = "     "..green..eName.."|r" else 
+		   							optimalString = "     "..red..eName.."|r" 
+		end	  
+	end	
 	
 	-- Build and determine the better gem option
 	unmatchedLink = StatLogic:BuildGemmedTooltip(link, rGem, rGem, rGem, mGem)
 	matchedLink  = StatLogic:BuildGemmedTooltip(link, rGem, yGem, bGem, mGem)
-	local _, upph, _ = GetValue(unmatchedLink)
-	local _, mpph, _ = GetValue(matchedLink)	
-	if upph >= mpph then 
-		link = unmatchedLink
-		optimalString = optimalString.." w/ All Red Gems"
-	else 
-		link = matchedLink 
-		optimalString = optimalString.." & Match Sockets"
+	
+	-- Check to make sure something actually happened, if we 
+	-- actually gemed something, the links wont be the same
+	if matchedLink ~= link then
+		linkGem = StatLogic:RemoveEnchant(item)
+	
+		if eName then optimalString = optimalString.."\n" end	 
+		local _, upph, _ = GetValue(unmatchedLink)
+		local _, mpph, _ = GetValue(matchedLink)	
+		if upph >= mpph then 
+			link = unmatchedLink
+			if linkGem == link then optimalString = optimalString..green else optimalString = optimalString..red end
+			optimalString = optimalString.."     All Red Gems"
+		else 
+			link = matchedLink
+			if linkGem == link then optimalString = optimalString..green else optimalString = optimalString..red end 
+			optimalString = optimalString.."     Match Sockets"
+		end
 	end
 	
 	-- Return the Optimized item
