@@ -1,7 +1,16 @@
+Release 1.2.2 2009-08-26
+	* Updated scaling factors
+	* Fixed bug in calculating total PP
+	* Added a hitcap warning (as debug msg)
+	* Added itemized output for /pp (as debug msg)
+	* Modified the way Custom Items are calculated
+	* Added many custom items (trinkets mostly)
+	* Optimal suggestions are color coded now
+
 Release 1.2.1 2009-08-26
 	* Added profession specific enchants
-	* Fixed bug where hit only item caused PP to not display
-	* Fixed gem suggestion language (Match Gems => Match Sockets)
+	* Fixed bug that caused PP to not display
+	* Fixed gem suggestion language
 	* Fixed bug when using /pp with zero hit
 
 Release 1.2.0 2009-08-26
