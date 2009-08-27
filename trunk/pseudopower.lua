@@ -1,4 +1,4 @@
-local REV = "$Rev$"
+local REV = "$Rev$:"
 
 ---------------
 -- Libraries --
