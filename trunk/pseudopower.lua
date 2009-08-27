@@ -10,6 +10,10 @@ local TipHooker = LibStub("LibTipHooker-1.1")
 ---------------------
 local DEBUG = true
 local quality_threshold = 2
+local green = "|cff20ff20"
+local red = "|cffff2020"
+local white = "|cffffffff"
+local purple = "|cffff00ff"
 
 
 -----------------
@@ -32,13 +36,14 @@ local function OnTooltipSetItem(self)
  		
  		if pp then
 			if pph > pp then
-     			self:AddLine(L["PseudoPower: %d (%d)"]:format(pp, pph))		
+     			self:AddLine(L[white.."PseudoPower:|r %d (%d)"]:format(pp, pph))		
         	else 
-				self:AddLine(L["PseudoPower: %d"]:format(pp))
+				self:AddLine(L[white.."PseudoPower:|r %d"]:format(pp))
 			end
 		end		
 	end
 end
+
 
 -----------------------
 -- Add tooltip hooks --
@@ -48,18 +53,32 @@ if (class == "PRIEST") then
 	-- GameTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)
 	-- ItemRefTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)	
 	TipHooker:Hook(OnTooltipSetItem, "item")
+	
+	-- Multiplyers
+	-- Weights :  Int=0.35  Spi=0.39  SP=1.56  Hit=2.39  Crit=1.12  Haste=1.07
+	local SPELL_POWER = 1
+	local SPELL_HIT = 1.53
+	local SPELL_CRIT = 0.72
+	local SPELL_HASTE = 0.68
+	local BONUS_INT = 0.22
+	local BONUS_SPI = 0.25	
 end 
 
+if (class == "MAGE") then
+	-- GameTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)
+	-- ItemRefTooltip:SetScript("OnTooltipSetItem", OnTooltipSetItem)	
+	TipHooker:Hook(OnTooltipSetItem, "item")
+	
+	-- Multiplyers
+	--  Weights :  Int=0.58  Spi=0.60  SP=1.40  Hit=2.88  Crit=0.85  Haste=1.66
+	local SPELL_POWER = 1.40
+	local SPELL_HIT = 2.88
+	local SPELL_CRIT = 0.85
+	local SPELL_HASTE = 1.66
+	local BONUS_INT = 0.58
+	local BONUS_SPI = 0.60
+end 
 
------------------
--- Multiplyers --
------------------
-local SPELL_POWER = 1
-local SPELL_HIT = 1.53
-local SPELL_CRIT = 0.72
-local SPELL_HASTE = 0.68
-local BONUS_INT = 0.22
-local BONUS_SPI = 0.25
 
 
 ------------------------------------------------------
@@ -68,6 +87,7 @@ local BONUS_SPI = 0.25
 local CUSTOM_ITEM_DATA = {
 	-- Equip Chance Items
 	[39229] = { 147.8, 147.8 },
+	[40255] = { 148, 241.01 },
 }
 
 

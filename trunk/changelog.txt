@@ -1,0 +1,7 @@
+Release 1.1.0 2009-08-22
+	* Added items to the special case list
+	* Changed coloring of tooltip text
+	* Fixed missing LibTipHooker from .toc
+
+Release 1.0.0 2009-08-21
+   * Initial build
