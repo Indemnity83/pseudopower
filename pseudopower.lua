@@ -48,9 +48,9 @@ local function OnTooltipSetItem(self)
  		if pp then
  			if pp > 0 then
 				if pph > pp then
-     				self:AddLine(L[white.."PseudoPower:|r %d (%d)"]:format(pp, pph))		
+     				self:AddLine(white.."PseudoPower:|r "..pp.." ("..pph..")")		
         		else 
-					self:AddLine(L[white.."PseudoPower:|r %d"]:format(pp))
+					self:AddLine(white.."PseudoPower:|r "..pp)
 				end
 			end
 		end		

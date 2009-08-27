@@ -1,5 +1,8 @@
+Release 1.1.2 2009-08-22
+	* Fixed bug with Localization
+
 Release 1.1.1 2009-08-22
-	* Fixed bug "attempt to perform arithmetic on global 'SPELL_POWER' (a nil value)"
+	* Fixed bug with "'SPELL_POWER' (a nil value)"
 	* PseudoPower will now not be displayed if 0
 
 Release 1.1.0 2009-08-22
