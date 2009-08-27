@@ -1,3 +1,7 @@
+Release 1.1.1 2009-08-22
+	* Fixed bug "attempt to perform arithmetic on global 'SPELL_POWER' (a nil value)"
+	* PseudoPower will now not be displayed if 0
+
 Release 1.1.0 2009-08-22
 	* Added items to the special case list
 	* Changed coloring of tooltip text
