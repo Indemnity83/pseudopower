@@ -120,7 +120,7 @@ local CUSTOM_ITEM_DATA = {
 	-- Equip Chance Items
 	[40682] = { 112, 84, 0, 0, 0, 0 },	-- Sundial of the Exiled
 	[40255] = { 128, 0, 0, 0, 0, 71 },	-- Dying Curse
-	[45518] = { 189, 120, 0, 0, 0, 0 }, -- Flare of the Heavens
+	[45518] = { 189, 120, 0, 0, 0, 0 },	-- Flare of the Heavens
 	[45490] = { 167, 0, 0, 0, 108, 0 },	-- Pandora's Plea
 	[39229] = { 98, 0, 112, 0, 0, 0 },	-- Embrace of the Spider
 	[37660] = { 114, 73, 0, 0, 0, 0 },	-- Forge Ember
@@ -142,11 +142,11 @@ local CUSTOM_ITEM_DATA = {
 	-- Meta Gems (these are somewhat hacked)
 	[41285] = { 70, 0, 0, 0, 0, 0 },	-- Chaotic Skyflare Diamond
 	
-	-- TODO: Confirm the following items	
-	[48018] = { 0, 126, 85, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 245)
-	[47946] = { 0, 126, 85, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 245)
-	[47879] = { 0, 114, 76, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 232)
-	[47726] = { 0, 114, 76, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 232)
+	-- TODO: Confirm the following items (currently, the haste is an educated guess)	
+	[48018] = { 0, 126, 47, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 245)
+	[47946] = { 0, 126, 47, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 245)
+	[47879] = { 0, 114, 42, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 232)
+	[47726] = { 0, 114, 42, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 232)
 }
 
 --------------------------------
