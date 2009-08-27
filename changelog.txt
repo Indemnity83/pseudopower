@@ -1,3 +1,10 @@
+Release 1.2.0 2009-08-26
+	* Added functions to calculate total PP
+	* Added /pp & /pseudopower to display total PP
+	* Added "Optimized" information to tooltips (beta)
+	* Fixed bug where stats went off the tooltip
+	* Combined PP and PPH on one line		
+
 Release 1.1.2 2009-08-22
 	* Fixed bug with Localization
 
