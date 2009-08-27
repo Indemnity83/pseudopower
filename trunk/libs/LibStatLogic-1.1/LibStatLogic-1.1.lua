@@ -1,10 +1,10 @@
 --[[
 Name: LibStatLogic-1.1
 Description: A Library for stat conversion, calculation and summarization.
-Revision: $Revision: 67 $
+Revision: $Revision$
 Author: Whitetooth
 Email: hotdogee [at] gmail [dot] com
-Last Update: $Date: 2009-08-09 17:21:56 +0000 (Sun, 09 Aug 2009) $
+Last Update: $Date$
 Website:
 Documentation:
 SVN: $URL $
@@ -25,7 +25,7 @@ Features:
 ]]
 
 local MAJOR = "LibStatLogic-1.1"
-local MINOR = "$Revision: 67 $"
+local MINOR = "$Revision$"
 
 local StatLogic = LibStub:NewLibrary(MAJOR, MINOR)
 if not StatLogic then return end
