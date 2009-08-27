@@ -1,5 +1,5 @@
 -- $Id$
-local REV = "$Id$:"
+local REV = "$Rev$"
 
 ---------------
 -- Libraries --
