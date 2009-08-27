@@ -120,18 +120,33 @@ local CUSTOM_ITEM_DATA = {
 	-- Equip Chance Items
 	[40682] = { 112, 84, 0, 0, 0, 0 },	-- Sundial of the Exiled
 	[40255] = { 128, 0, 0, 0, 0, 71 },	-- Dying Curse
-	
+	[45518] = { 189, 120, 0, 0, 0, 0 }, -- Flare of the Heavens
+	[45490] = { 167, 0, 0, 0, 108, 0 },	-- Pandora's Plea
+	[39229] = { 98, 0, 112, 0, 0, 0 },	-- Embrace of the Spider
+	[37660] = { 114, 73, 0, 0, 0, 0 },	-- Forge Ember
+	[40373] = { 49, 95, 0, 0, 0, 0 },	-- Extract of Necromantic Power
+	[47213] = { 131, 0, 84, 0, 0, 0 },	-- Abyssal Rune
+		
 	-- On Use (assumed to be used every cooldown)
-	[48724] = { 100, 0, 0, 0, 128, 0 }, -- Talisman of Resurgence
+	[48724] = { 100, 0, 0, 0, 128, 0 },	-- Talisman of Resurgence
 	[48722] = { 0, 0, 85, 0, 0, 128 }, 	-- Shard of the Crystal Heart
+	[45466] = { 125, 0, 72, 0, 0, 0 },	-- Scale of Fates
+	[45148] = { 84, 0, 0, 0, 0, 107 },	-- Living Flame
 	
 	-- Stacking Buff (assumed to be full stacks)
 	[40432] = { 200, 0, 0, 0, 0, 0 },	-- Illustration of the Dragon Soul
 	[47316] = { 309, 0, 0, 0, 0, 0 }, 	-- Reign of the Dead (assuming a crit every 2.5 seconds)
+	[47182] = { 309, 0, 0, 0, 0, 0 }, 	-- Reign of the Unliving (assuming a crit every 2.5 seconds)
+	[45308] = { 125, 87, 0, 0, 0, 0 }, 	-- Eye of the Broodmother
 	
 	-- Meta Gems (these are somewhat hacked)
-	[41285] = { 70, 0, 0, 0, 0, 0 },	-- Chaotic Skyflare Diamond	
+	[41285] = { 70, 0, 0, 0, 0, 0 },	-- Chaotic Skyflare Diamond
 	
+	-- TODO: Confirm the following items	
+	[48018] = { 0, 126, 85, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 245)
+	[47946] = { 0, 126, 85, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 245)
+	[47879] = { 0, 114, 76, 0, 0, 0}, 	-- Fetish of Volatile Power (ilvl 232)
+	[47726] = { 0, 114, 76, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 232)
 }
 
 --------------------------------
