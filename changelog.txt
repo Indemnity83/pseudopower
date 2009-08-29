@@ -1,3 +1,8 @@
+Release 1.2.3 2009-08-29
+  * Added more trinkets, end-game 3.1 and 3.2 trinkets
+  * Resolved Issue 1 (belt buckle not in optimized pp)
+  * Added revision to debug output in-game
+
 Release 1.2.2 2009-08-26
 	* Updated scaling factors
 	* Fixed bug in calculating total PP
