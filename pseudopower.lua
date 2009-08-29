@@ -1,6 +1,7 @@
 -- $Id$
 local REV = "$Rev$"
 
+
 ---------------
 -- Libraries --
 ---------------
@@ -161,6 +162,7 @@ local CUSTOM_ITEM_DATA = {
 	[47726] = { 0, 114, 42, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 232)
 }
 
+
 --------------------------------
 -- Calculate PP and PPH value --
 --------------------------------
@@ -253,6 +255,7 @@ function GetPPScore()
 		return sumPP
 	end	
 end
+
 
 ----------------------------------------
 -- Returns the best enchants per slot --
