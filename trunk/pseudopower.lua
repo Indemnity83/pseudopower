@@ -88,6 +88,11 @@ local function OnTooltipSetItem(self)
 			-- Display the optimal PseudoPower
 			local optimalItem, optimalString = OptimalItem(Item)
 			local opp, opph, _ = GetValue(optimalItem)
+			
+			-- Hack for Eternal Belt Buckle
+			local _,_,_,_,_,_,_,_,ItemSlot = GetItemInfo(Item)
+			if ItemSlot == "INVTYPE_WAIST" then opp = opp + 23 end	
+			
 			if opp > pp then					
 				if opph > opp then
 					self:AddLine(white.."Optimal PseudoPower:|r "..opp.." ("..opph.." w/ hit)")
@@ -277,7 +282,7 @@ function OptimalEnchant(itemSlot)
     elseif itemSlot == "INVTYPE_SHOULDER"	then return "Greater Inscription of the Storm", 3810
     elseif itemSlot == "INVTYPE_CHEST" 		then return "Enchant Chest - Powerful Stats", 3832
     elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Powerful Stats", 3832
-    elseif itemSlot == "INVTYPE_WAIST" 		then return "Eternal Belt Buckle", 3729
+    elseif itemSlot == "INVTYPE_WAIST" 		then return "Eternal Belt Buckle + Red Gem", 3729
     elseif itemSlot == "INVTYPE_LEGS" 		then return "Brilliant Spellthread", 3719
     elseif itemSlot == "INVTYPE_FEET" 		then 
     	if isEngineer then return "Nitro Boosts", 3606
@@ -352,4 +357,3 @@ function OptimalItem(item)
 	return link, optimalString
 
 end
-	
