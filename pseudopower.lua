@@ -70,10 +70,10 @@ end
 -------------------
 local function OnTooltipSetItem(self)
 	local _, Item = self:GetItem()
-	if Item then
+	local _, _, rarity, _, _, _, _, _, _ = GetItemInfo(Item)
+	if Item and rarity > quality_threshold then
  		local pp, pph, _ = GetValue(Item)
-		if pp then
-		
+		if pp then		
 			-- Show optimizations
 			self:AddLine(" ")
 		 		
@@ -107,11 +107,8 @@ local function OnTooltipSetItem(self)
 			
 			-- repaint tooltip
 			self:Show()
-	
-		end		
-		
+		end
 	end
-
 end
 
 
@@ -171,11 +168,6 @@ function GetValue(item)
 	
 	local _, itemLink, rarity, _, _, _, _, _, _ = GetItemInfo(item)
 	if not itemLink then return end
-	
-	-- Is the item above our minimum threshold?
-	if not rarity or rarity < quality_threshold then
-		return nil, nil, nil
-	end
 	
 	-- Get the item ID to check against custom data
 	local itemID = itemLink:match("item:(%d+)")
