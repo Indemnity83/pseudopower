@@ -22,13 +22,13 @@ local white = "|cffffffff"
 -----------------
 -- Multiplyers -- 
 -----------------
--- Scaled from http://code.google.com/p/simulationcraft/wiki/SampleOutputT8_Details
+-- Priest_T9_13_00_58_245      Int=0.366855  Spi=0.554587  SP=1.613748  Hit=2.545532  Crit=1.222958  Haste=1.042097
 local SPELL_POWER = 1.00
-local SPELL_HIT = 1.35
-local SPELL_CRIT = 0.72
-local SPELL_HASTE = 0.64
-local BONUS_INT = 0.22
-local BONUS_SPI = 0.26
+local SPELL_HIT = 1.58
+local SPELL_CRIT = 0.76
+local SPELL_HASTE = 0.65
+local BONUS_INT = 0.23
+local BONUS_SPI = 0.34
 
 
 ----------
@@ -278,7 +278,9 @@ function OptimalEnchant(itemSlot)
     elseif itemSlot == "INVTYPE_CHEST" 		then return "Enchant Chest - Powerful Stats", 3832
     elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Powerful Stats", 3832
     elseif itemSlot == "INVTYPE_WAIST" 		then return "Eternal Belt Buckle + Red Gem", 3729
-    elseif itemSlot == "INVTYPE_LEGS" 		then return "Brilliant Spellthread", 3719
+    elseif itemSlot == "INVTYPE_LEGS"       then
+       if isTailor then return "Sanctified Spellthread", 3872
+       else return "Brilliant Spellthread", 3719 end    
     elseif itemSlot == "INVTYPE_FEET" 		then 
     	if isEngineer then return "Nitro Boosts", 3606
     	else return "Enchant Boots - Icewalker", 3826 end

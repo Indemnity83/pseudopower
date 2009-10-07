@@ -1,4 +1,4 @@
-## Interface: 30200
+## Interface: 30202
 ## Title: PseudoPower
 ## Notes: Calculate Psudopower ratings for gear
 ## Author: Indemnity83
