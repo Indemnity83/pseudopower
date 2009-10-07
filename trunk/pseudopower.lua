@@ -34,10 +34,15 @@ local BONUS_SPI = 0.34
 ----------
 -- Gems --
 ----------
-local rGem = StatLogic:GetGemID(40113) -- Runed Cardinal Ruby (+23 SP)
-local bGem = StatLogic:GetGemID(40133) -- Purified Dreadstone (+12 SP & +10 Spi)
-local yGem = StatLogic:GetGemID(40152) -- Potent Ametrine (+12 SP & +10 Crit)
-local mGem = StatLogic:GetGemID(41285) -- Chaotic Skyflare Diamond (+21 Crit & 3% Crit Dmg)
+local rGemId = 40113 -- Runed Cardinal Ruby (+23 SP)
+local bGemId = 40133 -- Purified Dreadstone (+12 SP & +10 Spi)
+local yGemId = 40152 -- Potent Ametrine (+12 SP & +10 Crit)
+local mGemId = 41285 -- Chaotic Skyflare Diamond (+21 Crit & 3% Crit Dmg)
+
+local rGem = StatLogic:GetGemID(rGemId)
+local bGem = StatLogic:GetGemID(bGemId)
+local yGem = StatLogic:GetGemID(yGemId)
+local mGem = StatLogic:GetGemID(mGemId)
 	
 	
 -----------------
@@ -166,7 +171,7 @@ local CUSTOM_ITEM_DATA = {
 function GetValue(item)
 	if not item then return end
 	
-	local _, itemLink, rarity, _, _, _, _, _, _ = GetItemInfo(item)
+	local _, itemLink, rarity, _, _, _, _, _, itemSlot = GetItemInfo(item)
 	if not itemLink then return end
 	
 	-- Get the item ID to check against custom data
@@ -192,6 +197,16 @@ function GetValue(item)
 	if (statData["SPELL_HASTE_RATING"]) then pp = pp + statData["SPELL_HASTE_RATING"] * SPELL_HASTE end
 	if (statData["INT"]) then pp = pp + statData["INT"] * BONUS_INT end
 	if (statData["SPI"]) then pp = pp + statData["SPI"] * BONUS_SPI end
+	
+	-- TODO: Find a better method for adding a red gem to an Eternal Belt Buckle
+	if itemSlot == "INVTYPE_WAIST" then 
+		local testItem = StatLogic:ModEnchantGem(3729)
+		if testItem == itemLink then
+			-- Appears to have a belt buckle, hack in a red gem
+			rGemValue = GetValue(rGemId)
+			pp = pp + rGemValue
+		end		
+	end
 	
 	-- Do the final calculation including Hit
 	local pph = pp
