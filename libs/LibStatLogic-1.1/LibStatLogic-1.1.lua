@@ -34,8 +34,8 @@ if not StatLogic then return end
 ----------------------
 -- Version Checking --
 ----------------------
-wowBuildNo = tonumber((select(2, GetBuildInfo()))) -- need a global for loadstring
-local wowBuildNo = wowBuildNo
+local wowBuildNo = tonumber((select(2, GetBuildInfo())))
+StatLogic.wowBuildNo = wowBuildNo
 local toc = tonumber((select(4, GetBuildInfo())))
 
 
@@ -47,7 +47,7 @@ function CmdHandler()
 	DEBUG = not DEBUG
 end
 SlashCmdList["STATLOGICDEBUG"] = CmdHandler
-SLASH_STATLOGICDEBUG1 = "/sldebug";
+SLASH_STATLOGICDEBUG1 = "/sldebug"
 
 
 -----------------
@@ -86,9 +86,9 @@ function StatLogic:SetTip(item)
 		return
 	end
 	ItemRefTooltip:ClearLines()
-	ShowUIPanel(ItemRefTooltip);
+	ShowUIPanel(ItemRefTooltip)
 	if ( not ItemRefTooltip:IsShown() ) then
-		ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
+		ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
 	end
 	ItemRefTooltip:SetHyperlink(link)
 end
@@ -273,22 +273,21 @@ PatternLocale.enUS = {
 		["Brilliant Mana Oil"] = {["MANA_REG"] = 12, ["HEAL"] = 25}, -- ID: 20748
 		["Superior Mana Oil"] = {["MANA_REG"] = 14}, -- ID: 22521
 
-		["Eternium Line"] = {["FISHING"] = 5}, --
-		["Savagery"] = {["AP"] = 70}, --
-		["Vitality"] = {["MANA_REG"] = 4, ["HEALTH_REG"] = 4}, -- Enchant Boots - Vitality http://wow.allakhazam.com/db/spell.html?wspell=27948
-		["Soulfrost"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54}, --
-		["Sunfire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50}, --
+		--["Eternium Line"] = {["FISHING"] = 5}, -- +5 Fishing
+		--["Savagery"] = {["AP"] = 70}, -- +70 Attack Power
+		--["Vitality"] = {["MANA_REG"] = 4, ["HEALTH_REG"] = 4}, -- +4 Mana and Health every 5 sec
+		--["Soulfrost"] = {["SHADOW_SPELL_DMG"] = 54, ["FROST_SPELL_DMG"] = 54}, -- Changed to +54 Shadow and Frost Spell Power
+		--["Sunfire"] = {["ARCANE_SPELL_DMG"] = 50, ["FIRE_SPELL_DMG"] = 50}, -- Changed to +50 Arcane and Fire Spell Power
 
-		["Mithril Spurs"] = {["MOUNT_SPEED"] = 4}, -- Mithril Spurs
-		["Minor Mount Speed Increase"] = {["MOUNT_SPEED"] = 2}, -- Enchant Gloves - Riding Skill
+		-- ["Mithril Spurs"] = {["MOUNT_SPEED"] = 4}, -- +4% Mount Speed
+		-- ["Minor Mount Speed Increase"] = {["MOUNT_SPEED"] = 2}, -- +2% Mount Speed
 		["Equip: Run speed increased slightly."] = {["RUN_SPEED"] = 8}, -- [Highlander's Plate Greaves] ID: 20048
-		["Run speed increased slightly"] = {["RUN_SPEED"] = 8}, --
-		["Minor Speed Increase"] = {["RUN_SPEED"] = 8}, -- Enchant Boots - Minor Speed "Minor Speed Increase" http://wow.allakhazam.com/db/spell.html?wspell=13890
-		["Minor Speed"] = {["RUN_SPEED"] = 8}, -- Enchant Boots - Cat's Swiftness "Minor Speed and +6 Agility" http://wow.allakhazam.com/db/spell.html?wspell=34007
-		["Surefooted"] = {["MELEE_HIT_RATING"] = 10, ["SPELL_HIT_RATING"] = 10, ["MELEE_CRIT_RATING"] = 10, ["SPELL_CRIT_RATING"] = 10}, -- Enchant Boots - Surefooted "Surefooted" http://wow.allakhazam.com/db/spell.html?wspell=27954
+		["Minor Speed Increase"] = {["RUN_SPEED"] = 8}, -- EnchantID: 911 Enchant Boots - Minor Speed "Minor Speed Increase"
+		["Minor Speed"] = {["RUN_SPEED"] = 8}, -- EnchantID: 2939 Enchant Boots - Cat's Swiftness "Minor Speed and +6 Agility"
+		--["Surefooted"] = {["MELEE_HIT_RATING"] = 10, ["SPELL_HIT_RATING"] = 10, ["MELEE_CRIT_RATING"] = 10, ["SPELL_CRIT_RATING"] = 10}, -- EnchantID: 2658 Enchant Boots - Surefooted
 
-		["Subtlety"] = {["MOD_THREAT"] = -2}, -- Enchant Cloak - Subtlety
-		["2% Reduced Threat"] = {["MOD_THREAT"] = -2}, -- StatLogic:GetSum("item:23344:2832")
+		--["Subtlety"] = {["MOD_THREAT"] = -2}, -- EnchantID: 2621 Enchant Cloak - Subtlety
+		["2% Reduced Threat"] = {["MOD_THREAT"] = -2}, -- EnchantID: 2621, 2832, 3296 
 		["Equip: Allows underwater breathing."] = false, -- [Band of Icy Depths] ID: 21526
 		["Allows underwater breathing"] = false, --
 		["Equip: Immune to Disarm."] = false, -- [Stronghold Gauntlets] ID: 12639
@@ -296,18 +295,19 @@ PatternLocale.enUS = {
 		["Crusader"] = false, -- Enchant Crusader
 		["Lifestealing"] = false, -- Enchant Crusader
 
-		["Tuskar's Vitality"] = {["RUN_SPEED"] = 8, ["STA"] = 15}, -- EnchantID: 3232
-		["Wisdom"] = {["MOD_THREAT"] = -2, ["SPI"] = 10}, -- EnchantID: 3296
-		["Accuracy"] = {["MELEE_HIT_RATING"] = 25, ["SPELL_HIT_RATING"] = 25, ["MELEE_CRIT_RATING"] = 25, ["SPELL_CRIT_RATING"] = 25}, -- EnchantID: 3788
-		["Scourgebane"] = {["AP_UNDEAD"] = 140}, -- EnchantID: 3247
-		["Icewalker"] = {["MELEE_HIT_RATING"] = 12, ["SPELL_HIT_RATING"] = 12, ["MELEE_CRIT_RATING"] = 12, ["SPELL_CRIT_RATING"] = 12}, -- EnchantID: 3826
+		--["Tuskar's Vitality"] = {["RUN_SPEED"] = 8, ["STA"] = 15}, -- EnchantID: 3232 +15 Stamina and Minor Speed Increase
+		--["Wisdom"] = {["MOD_THREAT"] = -2, ["SPI"] = 10}, -- EnchantID: 3296 +10 Spirit and 2% Reduced Threat
+		--["Accuracy"] = {["MELEE_HIT_RATING"] = 25, ["SPELL_HIT_RATING"] = 25, ["MELEE_CRIT_RATING"] = 25, ["SPELL_CRIT_RATING"] = 25}, -- EnchantID: 3788 +25 Hit Rating and +25 Critical Strike Rating
+		--["Scourgebane"] = {["AP_UNDEAD"] = 140}, -- EnchantID: 3247 +140 Attack Power versus Undead
+		--["Icewalker"] = {["MELEE_HIT_RATING"] = 12, ["SPELL_HIT_RATING"] = 12, ["MELEE_CRIT_RATING"] = 12, ["SPELL_CRIT_RATING"] = 12}, -- EnchantID: 3826 +12 Hit Rating and +12 Critical Strike Rating
 		["Gatherer"] = {["HERBALISM"] = 5, ["MINING"] = 5, ["SKINNING"] = 5}, -- EnchantID: 3296
-		["Greater Vitality"] = {["MANA_REG"] = 6, ["HEALTH_REG"] = 6}, -- EnchantID: 3244
+		--["Greater Vitality"] = {["MANA_REG"] = 6, ["HEALTH_REG"] = 6}, -- EnchantID: 3244 +7 Health and Mana every 5 sec
 
-		["+37 Stamina and +20 Defense"] = {["STA"] = 37, ["DEFENSE_RATING"] = 20}, -- Defense does not equal Defense Rating...
+		--["+37 Stamina and +20 Defense"] = {["STA"] = 37, ["DEFENSE_RATING"] = 20}, -- EnchantID: 3818 Defense does not equal Defense Rating...
 		["Rune of Swordbreaking"] = {["PARRY"] = 2}, -- EnchantID: 3594
 		["Rune of Swordshattering"] = {["PARRY"] = 4}, -- EnchantID: 3365
-		["Rune of the Stoneskin Gargoyle"] = {["DEFENSE"] = 25, ["MOD_STA"] = 2}, -- EnchantID: 
+		["Rune of the Stoneskin Gargoyle"] = {["DEFENSE"] = 25, ["MOD_STA"] = 2}, -- EnchantID: 3847
+		["Rune of the Nerubian Carapace"] = {["DEFENSE"] = 13, ["MOD_STA"] = 1}, -- EnchantID: 3883
 	},
 	----------------------------
 	-- Single Plus Stat Check --
@@ -383,6 +383,7 @@ PatternLocale.enUS = {
 		["% Threat"] = {"MOD_THREAT"}, -- StatLogic:GetSum("item:23344:2613")
 		["% Intellect"] = {"MOD_INT"}, -- [Ember Skyflare Diamond] ID: 41333
 		["% Shield Block Value"] = {"MOD_BLOCK_VALUE"}, -- [Eternal Earthsiege Diamond] ID: 41396
+		["% Mount Speed"] = {"MOUNT_SPEED"}, -- Mithril Spurs, Minor Mount Speed Increase
 		["Scope (Damage)"] = {"RANGED_DMG"}, -- Khorium Scope EnchantID: 2723
 		["Scope (Critical Strike Rating)"] = {"RANGED_CRIT_RATING"}, -- Stabilized Eternium Scope EnchantID: 2724
 		["Your attacks ignoreof your opponent's armor"] = {"IGNORE_ARMOR"}, -- StatLogic:GetSum("item:33733")
@@ -434,6 +435,7 @@ PatternLocale.enUS = {
 		["Attack Power"] = {"AP",},
 		["Increases attack power"] = {"AP",},
 		["Attack Power when fighting Undead"] = {"AP_UNDEAD",},
+		["Attack Power versus Undead"] = {"AP_UNDEAD",}, -- Scourgebane EnchantID: 3247
 		-- [Wristwraps of Undead Slaying] ID:23093
 		["Increases attack powerwhen fighting Undead"] = {"AP_UNDEAD",}, -- [Seal of the Dawn] ID:13209
 		["Increases attack powerwhen fighting Undead.  It also allows the acquisition of Scourgestones on behalf of the Argent Dawn"] = {"AP_UNDEAD",}, -- [Seal of the Dawn] ID:13209
@@ -468,6 +470,7 @@ PatternLocale.enUS = {
 		["Mana restored per 5 seconds"] = {"MANA_REG",}, -- Magister's Armor Kit +3 Mana restored per 5 seconds http://wow.allakhazam.com/db/spell.html?wspell=32399
 		["Mana Regenper 5 sec"] = {"MANA_REG",}, -- Enchant Bracer - Mana Regeneration "Mana Regen 4 per 5 sec." http://wow.allakhazam.com/db/spell.html?wspell=23801
 		["Mana per 5 Sec"] = {"MANA_REG",}, -- Enchant Bracer - Restore Mana Prime "6 Mana per 5 Sec." http://wow.allakhazam.com/db/spell.html?wspell=27913
+		["Health and Mana every 5 sec"] = {"HEALTH_REG", "MANA_REG",}, -- Greater Vitality EnchantID: 3244
 
 		["Spell Penetration"] = {"SPELLPEN",}, -- Enchant Cloak - Spell Penetration "+20 Spell Penetration" http://wow.allakhazam.com/db/spell.html?wspell=34003
 		["Increases your spell penetration"] = {"SPELLPEN",},
@@ -495,6 +498,8 @@ PatternLocale.enUS = {
 		["Nature Spell Damage"] = {"NATURE_SPELL_DMG",},
 		["Frost Spell Damage"] = {"FROST_SPELL_DMG",}, -- Acrobatic Staff of Frozen Wrath ID:3185:0:0:0:0:0:1957
 		["Shadow Spell Damage"] = {"SHADOW_SPELL_DMG",},
+		["Shadow and Frost Spell Power"] = {"SHADOW_SPELL_DMG", "FROST_SPELL_DMG",}, -- Soulfrost
+		["Arcane and Fire Spell Power"] = {"ARCANE_SPELL_DMG", "FIRE_SPELL_DMG",}, -- Sunfire
 		["Increases damage done by Shadow spells and effects"] = {"SHADOW_SPELL_DMG",}, -- Frozen Shadoweave Vest ID:21871
 		["Increases damage done by Frost spells and effects"] = {"FROST_SPELL_DMG",}, -- Frozen Shadoweave Vest ID:21871
 		["Increases damage done by Holy spells and effects"] = {"HOLY_SPELL_DMG",},
@@ -625,6 +630,9 @@ DisplayLocale.enUS = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "Stat Multiplier",
+  ["Attack Power Multiplier"] = "Attack Power Multiplier",
+  ["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -1254,6 +1262,9 @@ DisplayLocale.koKR = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "Stat Multiplier",
+  ["Attack Power Multiplier"] = "Attack Power Multiplier",
+  ["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -1988,6 +1999,9 @@ DisplayLocale.zhTW = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "總屬性提高%",
+  ["Attack Power Multiplier"] = "攻擊強度提高%",
+  ["Reduced Physical Damage Taken"] = "物理傷害減少%",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -2351,7 +2365,8 @@ PatternLocale.deDE = {
 		["+37 Ausdauer und +20 Verteidigung"] = {["STA"] = 37, ["DEFENSE_RATING"] = 20}, -- Defense does not equal Defense Rating...
 		["Rune des Schwertbrechens"] = {["PARRY"] = 2}, -- EnchantID: 3594
 		["Rune des Schwertberstens"] = {["PARRY"] = 4}, -- EnchantID: 3365
-		["Rune des Steinhautgargoyles"] = {["DEFENSE"] = 25, ["MOD_STA"] = 2}, -- EnchantID: 
+		["Rune des Steinhautgargoyles"] = {["DEFENSE"] = 25, ["MOD_STA"] = 2}, -- EnchantID: 3847
+		["Rune der nerubischen Panzerung"] = {["DEFENSE"] = 13, ["MOD_STA"] = 1}, -- EnchantID: 3883
 	},
 	----------------------------
 	-- Single Plus Stat Check --
@@ -2466,6 +2481,7 @@ PatternLocale.deDE = {
 		["Blocken"] = {"BLOCK_VALUE",}, -- +22 Block Value
 		["Blockwert"] = {"BLOCK_VALUE",}, -- +22 Block Value
 		["Erhöht den Blockwert Eures Schildes"] = {"BLOCK_VALUE",},
+		["Erhöht den Blockwert Eures Schilds"] = {"BLOCK_VALUE",},
 
 		["Gesundheit"] = {"HEALTH",},
 		["HP"] = {"HEALTH",},
@@ -2622,6 +2638,7 @@ PatternLocale.deDE = {
 		["Erhöht Eure Waffenkundewertung um"] = {"EXPERTISE_RATING"},
 		["Rüstungsdurchschlagwertung"] = {"ARMOR_PENETRATION_RATING"},
 		["Erhöht den Rüstungsdurchschlagwert um"] = {"ARMOR_PENETRATION_RATING"},
+		["Erhöht die Rüstungsdurchschlagwertung um"] = {"ARMOR_PENETRATION_RATING"},
 		["Erhöht Eure Rüstungsdurchschlagwertung um"] = {"ARMOR_PENETRATION_RATING"}, -- ID:43178
 
 		-- Exclude
@@ -2641,6 +2658,9 @@ DisplayLocale.deDE = {
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
 
+  ["Stat Multiplier"] = "Wertemultiplikatoren",
+  ["Attack Power Multiplier"] = "Angriffskraft-Multiplikatoren",
+  ["Reduced Physical Damage Taken"] = "Reduzierter erlittener physischer Schaden",
 	-- NOTE I left many of the english terms because german players tend to use them and germans are much tooo long
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
@@ -2724,9 +2744,9 @@ DisplayLocale.deDE = {
 		["RANGED_CRIT_AVOID_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." Kritvermeidung "..RATING, PLAYERSTAT_RANGED_COMBAT.." Kritvermeidung "..RATING},
 		["SPELL_CRIT_AVOID_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." Kritvermeidung "..RATING, PLAYERSTAT_SPELL_COMBAT.." Kritvermeidung "..RATING},
 		["RESILIENCE_RATING"] = {COMBAT_RATING_NAME15, COMBAT_RATING_NAME15}, -- COMBAT_RATING_NAME15 = "Resilience"
-		["MELEE_HASTE_RATING"] = {"Hast "..RATING, "Hast  "..RATING}, --
-		["RANGED_HASTE_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." Hast  "..RATING, PLAYERSTAT_RANGED_COMBAT.." Hast  "..RATING},
-		["SPELL_HASTE_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." Hast  "..RATING, PLAYERSTAT_SPELL_COMBAT.." Hast  "..RATING},
+		["MELEE_HASTE_RATING"] = {"Hast "..RATING, "Hast "..RATING}, --
+		["RANGED_HASTE_RATING"] = {PLAYERSTAT_RANGED_COMBAT.." Hast "..RATING, PLAYERSTAT_RANGED_COMBAT.." Hast "..RATING},
+		["SPELL_HASTE_RATING"] = {PLAYERSTAT_SPELL_COMBAT.." Hast "..RATING, PLAYERSTAT_SPELL_COMBAT.." Hast "..RATING},
 		["EXPERTISE_RATING"] = {"Waffenkundewertung", "Waffenkundewertung"},
 		["DAGGER_WEAPON_RATING"] = {"Dagger "..SKILL.." "..RATING, "Dagger "..RATING}, -- SKILL = "Skill"
 		["SWORD_WEAPON_RATING"] = {"Sword "..SKILL.." "..RATING, "Sword "..RATING},
@@ -2740,7 +2760,7 @@ DisplayLocale.deDE = {
 		["BOW_WEAPON_RATING"] = {"Bow "..SKILL.." "..RATING, "Bow "..RATING},
 		["FERAL_WEAPON_RATING"] = {"Feral "..SKILL.." "..RATING, "Feral "..RATING},
 		["FIST_WEAPON_RATING"] = {"Unarmed "..SKILL.." "..RATING, "Unarmed "..RATING},
-		["ARMOR_PENETRATION_RATING"] = {"Armor Penetration".." "..RATING, "ArP".." "..RATING},
+		["ARMOR_PENETRATION_RATING"] = {"Rüstungsdurchschlag".." "..RATING, "ArP".." "..RATING},
 
 		---------------------------------------------------------------------------
 		-- Tier2 Stats - Stats that only show up when broken down from a Tier1 stat
@@ -2788,7 +2808,7 @@ DisplayLocale.deDE = {
 		["BOW_WEAPON"] = {"Bow "..SKILL, "Bow"},
 		["FERAL_WEAPON"] = {"Feral "..SKILL, "Feral"},
 		["FIST_WEAPON"] = {"Unarmed "..SKILL, "Unarmed"},
-		["ARMOR_PENETRATION"] = {"Armor Penetration(%)", "ArP(%)"},
+		["ARMOR_PENETRATION"] = {"Rüstungsdurchschlag(%)", "ArP(%)"},
 
 		---------------------------------------------------------------------------
 		-- Tier3 Stats - Stats that only show up when broken down from a Tier2 stat
@@ -3346,6 +3366,9 @@ DisplayLocale.frFR = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "Stat Multiplier",
+  ["Attack Power Multiplier"] = "Attack Power Multiplier",
+  ["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -4095,6 +4118,9 @@ DisplayLocale.zhCN = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "Stat Multiplier",
+  ["Attack Power Multiplier"] = "Attack Power Multiplier",
+  ["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -4647,8 +4673,8 @@ PatternLocale.ruRU = {
 		["Increases ranged attack speed"] = false, -- AV quiver
 		--]]
 
-		["Эффективность брони противника против ваших атак снижена наед"] = {"IGNORE_ARMOR"}, -- StatLogic:GetSum("item:33733")
-		["Увеличивает рейтинг пробивания брони на"] = {"IGNORE_ARMOR"},
+		["Увеличивает рейтинг пробивания брони на"] = {"IGNORE_ARMOR"}, -- StatLogic:GetSum("item:33733")
+		["Повышает рейтинг пробивания брони на"] = {"ARMOR_PENETRATION_RATING"},
 		["% угрозы"] = {"MOD_THREAT"}, -- StatLogic:GetSum("item:23344:2613")
 		["увеличение уровня эффективного действия незаметности на"] = {"STEALTH_LEVEL"}, -- [Nightscape Boots] ID: 8197
 		["Скорость бега слегка увеличилась."] = {"MOUNT_SPEED"}, -- [Highlander's Plate Greaves] ID: 20048
@@ -5239,6 +5265,9 @@ DisplayLocale.esES = {
 	-- Please localize these strings too, global strings were used in the enUS locale just to have minimum
 	-- localization effect when a locale is not available for that language, you don't have to use global
 	-- strings in your localization.
+  ["Stat Multiplier"] = "Stat Multiplier",
+  ["Attack Power Multiplier"] = "Attack Power Multiplier",
+  ["Reduced Physical Damage Taken"] = "Reduced Physical Damage Taken",
 	["StatIDToName"] = {
 		--[StatID] = {FullName, ShortName},
 		---------------------------------------------------------------------------
@@ -5564,10 +5593,10 @@ local strsplit = strsplit
 local strjoin = strjoin
 local gmatch = gmatch
 local gsub = gsub
+local wipe = wipe
 local pairs = pairs
 local ipairs = ipairs
 local type = type
-local loadstring = loadstring
 local unpack = unpack
 local strutf8lower = string.utf8lower
 local strutf8sub = string.utf8sub
@@ -5578,14 +5607,16 @@ local UnitStat = UnitStat
 local GetShapeshiftForm = GetShapeshiftForm
 local GetShapeshiftFormInfo = GetShapeshiftFormInfo
 local GetTalentInfo = GetTalentInfo
+local GetInventoryItemID = GetInventoryItemID
 local GetSpellInfo = GetSpellInfo
+local GetCVarBool = GetCVarBool
 
 -- Cached GetItemInfo
 local GetItemInfoCached = setmetatable({}, { __index = function(self, n)
-	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemTexture = GetItemInfo(n)
+	local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemTexture, itemSellValue = GetItemInfo(n)
 	if itemName then
 			-- store in cache only if it exists in the local cache
-			self[n] = {itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemTexture}
+			self[n] = {itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemCount, itemEquipLoc, itemTexture, itemSellValue}
 			return self[n] -- return result
 	end
 end })
@@ -5596,6 +5627,18 @@ local GetItemInfo = function(item)
 	end
 end
 StatLogic.GetItemInfo = GetItemInfo
+
+-- taken from lua programming gems
+local function memoize(f)
+	local mem = {} -- memoizing table
+	return function(x)
+		if not mem[x] then
+			mem[x] = f(x)
+		end
+		return mem[x]
+	end
+end
+local loadstring = memoize(loadstring)
 
 ---------------
 -- Lua Tools --
@@ -5779,31 +5822,6 @@ function StatLogic:argCheck(arg, num, kind, kind2, kind3, kind4, kind5)
 end
 
 
-----------------
--- Name to ID --
-----------------
-local ClassNameToID = {
-	"WARRIOR",
-	"PALADIN",
-	"HUNTER",
-	"ROGUE",
-	"PRIEST",
-	"DEATHKNIGHT",
-	"SHAMAN",
-	"MAGE",
-	"WARLOCK",
-	"DRUID",
-	["WARRIOR"] = 1,
-	["PALADIN"] = 2,
-	["HUNTER"] = 3,
-	["ROGUE"] = 4,
-	["PRIEST"] = 5,
-	["DEATHKNIGHT"] = 6,
-	["SHAMAN"] = 7,
-	["MAGE"] = 8,
-	["WARLOCK"] = 9,
-	["DRUID"] = 10,
-}
 
 --[[---------------------------------
 	:GetClassIdOrName(class)
@@ -5842,6 +5860,30 @@ Example:
 	StatLogic:GetClassIdOrName("WARRIOR") -- 1
 	StatLogic:GetClassIdOrName(10) -- "DRUID"
 -----------------------------------]]
+
+local ClassNameToID = {
+	"WARRIOR",
+	"PALADIN",
+	"HUNTER",
+	"ROGUE",
+	"PRIEST",
+	"DEATHKNIGHT",
+	"SHAMAN",
+	"MAGE",
+	"WARLOCK",
+	"DRUID",
+	["WARRIOR"] = 1,
+	["PALADIN"] = 2,
+	["HUNTER"] = 3,
+	["ROGUE"] = 4,
+	["PRIEST"] = 5,
+	["DEATHKNIGHT"] = 6,
+	["SHAMAN"] = 7,
+	["MAGE"] = 8,
+	["WARLOCK"] = 9,
+	["DRUID"] = 10,
+}
+
 function StatLogic:GetClassIdOrName(class)
 	return ClassNameToID[class]
 end
@@ -6060,21 +6102,28 @@ local function GetStanceIcon()
 		return GetShapeshiftFormInfo(currentStance)
 	end
 end
+StatLogic.GetStanceIcon = GetStanceIcon
 
-local function GetPlayerBuffName(buff)
-	return UnitBuff("player", buff)
+local function PlayerHasAura(aura)
+	return UnitBuff("player", aura) or UnitDebuff("player", aura)
 end
+StatLogic.PlayerHasAura = PlayerHasAura
 
-local function GetPlayerBuffRankStack(buff)
-	--name, rank, icon, count, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buff)
-	local hasBuff, rank, _, count = GetPlayerBuffName(buff)
-	if hasBuff then
-		if not count or count == 0 then
-			count = 1
+
+local function GetPlayerAuraRankStack(buff)
+	--name, rank, icon, stack, debuffType, duration, expirationTime, isMine, isStealable = UnitAura("player", buff)
+	local name, rank, _, stack = UnitBuff("player", buff)
+  if not name then -- if not a buff, check for debuff
+    name, rank, _, stack = UnitDebuff("player", buff)
+  end
+	if name then
+		if not stack or stack == 0 then
+			stack = 1
 		end
-		return tonumber(strmatch(rank, "(%d+)") or 1), count
+		return tonumber(strmatch(rank, "(%d+)") or 1), stack
 	end
 end
+StatLogic.GetPlayerAuraRankStack = GetPlayerAuraRankStack
 
 local function GetTotalDefense(unit)
 	local base, modifier = UnitDefense(unit);
@@ -6089,9 +6138,91 @@ local function PlayerHasGlyph(glyph, talentGroup)
 		end
 	end
 end
+StatLogic.PlayerHasGlyph = PlayerHasGlyph
 
+---------------
+-- Item Sets --
+---------------
+local SetToItem -- SetID comes from ItemSet.dbc
+if playerClass == "MAGE" then
+	SetToItem = {
+		[843] = {47748, 47749, 57750, 47751, 47752, 47753, 47754, 47755, 47756, 47757, 47758, 47759, 47760, 47761, 47762}, -- Khadgar's Regalia (T9 Mage Ally)
+		[844] = {47773, 47774, 47775, 47776, 47777, 47768, 47769, 47770, 47771, 47772, 47763, 47764, 47765, 47766, 47767}, -- Sunstrider's Regalia (T9 Mage Horde)
+	}
+else
+	SetToItem = {}
+	SetToItem = {
+		[845] = {47803, 47804, 47805, 47806, 47807},
+		[837] = {46135, 46136, 46137, 46139, 46140},
+	}
+end
+-- Build ItemToSet from SetToItem
+ItemToSet = {}
+for set, items in pairs(SetToItem) do
+	for _, item in pairs(items) do
+		ItemToSet[item] = set
+	end
+end
 
+-- Create a frame
+local ItemSetFrame = StatLogic.ItemSetFrame
+if not ItemSetFrame then
+	ItemSetFrame = CreateFrame("Frame", "StatLogicItemSetFrame")
+	StatLogic.ItemSetFrame = ItemSetFrame
+else
+	ItemSetFrame:UnregisterAllEvents()
+end
 
+--[[
+PlayerItemSets = {
+	[844] = 4,
+}
+--]]
+local PlayerItemSets = {}
+-- API
+function StatLogic:PlayerHasItemSet(itemset)
+  return PlayerItemSets[itemset]
+end
+-- Don't set any scripts if the class doesn't have any sets to check
+if table.maxn(ItemToSet) ~= 0 then
+	local WatchInventoryID = {
+		(GetInventorySlotInfo("HeadSlot")),
+		(GetInventorySlotInfo("ShoulderSlot")),
+		(GetInventorySlotInfo("ChestSlot")),
+		(GetInventorySlotInfo("HandsSlot")),
+		(GetInventorySlotInfo("LegsSlot")),
+	}
+	local function UpdatePlayerItemSets()
+		wipe(PlayerItemSets)
+		for _, slot in pairs(WatchInventoryID) do
+			local set = ItemToSet[GetInventoryItemID('player', slot)]
+			if set then
+				PlayerItemSets[set] = (PlayerItemSets[set] or 0) + 1
+			end
+		end
+	end
+	-- we will schedule this since PLAYER_EQUIPMENT_CHANGED fires multiple times when you switch whole sets
+	ItemSetFrame:SetScript("OnUpdate", function(self, elapsed)
+		if self.updateTime and (GetTime() >= self.updateTime) then
+			self.updateTime = nil
+			UpdatePlayerItemSets()
+		end
+	end)
+	ItemSetFrame:SetScript("OnEvent", function(self, event, ...) if self[event] then return self[event](self, event, ...) end end)
+	ItemSetFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
+	function ItemSetFrame:PLAYER_EQUIPMENT_CHANGED()
+		self.updateTime = GetTime() + 0.1 -- 0.1 sec delay
+	end
+	-- Initialize on PLAYER_LOGIN
+	if (IsLoggedIn()) then -- LOD
+		UpdatePlayerItemSets()
+	else
+		ItemSetFrame:RegisterEvent("PLAYER_LOGIN")
+		function ItemSetFrame:PLAYER_LOGIN()
+			UpdatePlayerItemSets()
+		end
+	end
+end
 --============--
 -- Base Stats --
 --============--
@@ -6392,13 +6523,14 @@ Apply Aura: Mod Skill Talent (Defense)
 "ADD_RANGED_AP_MOD_INT"
 "ADD_ARMOR_MOD_INT"
 "ADD_SCHOOL_SP_MOD_SPI" -- Priest: Twisted Faith
+"ADD_SPELL_DMG_MOD_STR" -- Paladin: Touched by the Light
 "ADD_SPELL_DMG_MOD_STA"
 "ADD_SPELL_DMG_MOD_INT"
 "ADD_SPELL_DMG_MOD_SPI"
 "ADD_SPELL_DMG_MOD_AP" -- Shaman: Mental Quickness, Paladin: Sheath of Light
-"ADD_HEALING_MOD_STR"
+"ADD_HEALING_MOD_STR" -- Paladin: Touched by the Light
 "ADD_HEALING_MOD_AGI"
-"ADD_HEALING_MOD_STA" -- Paladin: Touched by the Light
+"ADD_HEALING_MOD_STA"
 "ADD_HEALING_MOD_INT"
 "ADD_HEALING_MOD_SPI"
 "ADD_HEALING_MOD_AP" -- Shaman: Mental Quickness
@@ -6488,6 +6620,10 @@ local StatModInfo = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
+	["ADD_SPELL_DMG_MOD_STR"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
 	["ADD_SPELL_DMG_MOD_STA"] = {
 		initialValue = 0,
 		finalAdjust = 0,
@@ -6496,7 +6632,19 @@ local StatModInfo = {
 		initialValue = 0,
 		finalAdjust = 0,
 	},
+	["ADD_SPELL_DMG_MOD_INT"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
 	["ADD_SPELL_DMG_MOD_SPI"] = {
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_SPELL_DMG_MOD_PET_STA"] = { -- Demonic Knowledge
+		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_SPELL_DMG_MOD_PET_INT"] = { -- Demonic Knowledge
 		initialValue = 0,
 		finalAdjust = 0,
 	},
@@ -6534,6 +6682,14 @@ local StatModInfo = {
 	},
 	["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
 		initialValue = 0,
+		finalAdjust = 0,
+	},
+	["ADD_PET_STA_MOD_STA"] = {
+		initialValue = 1,
+		finalAdjust = 0,
+	},
+	["ADD_PET_INT_MOD_INT"] = {
+		initialValue = 1,
 		finalAdjust = 0,
 	},
 	["MOD_CRIT_DAMAGE_TAKEN"] = {
@@ -6609,7 +6765,7 @@ local StatModInfo = {
 		finalAdjust = 1,
 	},
 }
-
+StatLogic.StatModInfo = StatModInfo -- so other addons can use this directly
 
 ------------------
 -- StatModTable --
@@ -6619,8 +6775,10 @@ local StatModInfo = {
 2. Click on the green Use: TEXT on the "tooltip" to go to a spell page.
 3. Click on "See also" tab for a spell with a gear icon, the spell id for this page is what you put in here.
 --]]
-local StatModTable = {
-	["DRUID"] = {
+local StatModTable = {}
+StatLogic.StatModTable = StatModTable -- so other addons can use this directly
+if playerClass == "DRUID" then
+	StatModTable["DRUID"] = {
 		-- Druid: Master Shapeshifter (Rank 2) - 3,9
 		--        Moonkin Form - Increases spell damage by 2%/4%.
 		--      * Does not affect char window stats
@@ -6633,7 +6791,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04,
 				},
-				["buff"] = GetSpellInfo(24858),		-- ["Moonkin Form"],
+				["buff"] = 24858,		-- ["Moonkin Form"],
 			},
 			{
 				["tab"] = 1,
@@ -6653,30 +6811,20 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04,
 				},
-				["buff"] = GetSpellInfo(33891),		-- ["Tree of Life"],
+				["buff"] = 33891,		-- ["Tree of Life"],
 			},
 		},
 		--]]
 		-- Druid: Improved Moonkin Form (Rank 3) - 1,19
-		--        Your Moonkin Aura also causes affected targets to gain 1%/2%/3% haste and you to gain 5%/10%/15% of your spirit as additional spell damage.
+		--        Your Moonkin Aura also causes affected targets to gain 1%/2%/3% haste and you to gain 10/20/30% of your spirit as additional spell damage.
 		["ADD_SPELL_DMG_MOD_SPI"] = {
-			{
-				["tab"] = 1,
-				["num"] = 19,
-				["rank"] = {
-					0.05, 0.10, 0.15,
-				},
-				["buff"] = GetSpellInfo(24858), -- ["Moonkin Form"],
-				["condition"] = "wowBuildNo < 9901",
-			},
 			{
 				["tab"] = 1,
 				["num"] = 19,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["buff"] = GetSpellInfo(24858), -- ["Moonkin Form"],
-				["condition"] = "wowBuildNo >= 9901",
+				["buff"] = 24858, -- ["Moonkin Form"],
 			},
 		},
 		-- Druid: Improved Tree of Life (Rank 3) - 3,24
@@ -6688,7 +6836,7 @@ local StatModTable = {
 				["rank"] = {
 					0.05, 0.10, 0.15,
 				},
-				["buff"] = GetSpellInfo(33891), -- ["Tree of Life"],
+				["buff"] = 33891, -- ["Tree of Life"],
 			},
 		},
 		-- Druid: Lunar Guidance (Rank 3) - 1,12
@@ -6729,30 +6877,18 @@ local StatModTable = {
 			},
 		},
 		-- Druid: Intensity (Rank 3) - 3,6
-		--        Allows 5%/10%/15% of your Mana regeneration to continue while casting and causes your Enrage ability to instantly generate 10 rage.
-		-- 2.3.0: 3,7: increased to 10/20/30% mana regeneration.
-		-- 3.1.0: Now grants 17/33/50% of mana regeneration while casting. 
+		--        Allows 17/33/50% of your Mana regeneration to continue while casting and causes your Enrage ability to instantly generate 10 rage.
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
-			{
-				["tab"] = 3,
-				["num"] = 7,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 3,
 				["num"] = 7,
 				["rank"] = {
 					0.17, 0.33, 0.50,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Druid: Dreamstate (Rank 3) - 1,17
+		-- Druid: Dreamstate (Rank 3) - 1,15
 		--        Regenerate mana equal to 4%/7%/10% of your Intellect every 5 sec, even while casting.
-		-- 3.0.2: 1,15
 		["ADD_MANA_REG_MOD_INT"] = {
 			{
 				["tab"] = 1,
@@ -6773,7 +6909,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -6781,7 +6917,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -6789,7 +6925,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4,
 				},
-				["buff"] = GetSpellInfo(32356),		-- ["Cat Form"],
+				["buff"] = 32356,		-- ["Cat Form"],
 			},
 			{
 				["tab"] = 2,
@@ -6797,7 +6933,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -6805,7 +6941,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Survival of the Fittest (Rank 3) - 2,18
@@ -6824,12 +6960,12 @@ local StatModTable = {
 		--        All damage taken is reduced by 20%.
 		-- Druid: Improved Barkskin (Rank 2) - 3,25
 		--        Increases the damage reduction granted by your Barkskin spell by 5/10%
-		-- Druid: Natural Perfection (Rank 3) - 3,18
-		--        Your critical strike chance with all spells is increased by 3% and melee and ranged critical strikes against you cause 4%/7%/10% less damage.
-		-- 2.4.0: Your critical strike chance with all spells is increased by 3% and critical strikes against you give you the Natural Perfection effect reducing all damage taken by 2%/3%/4%.
-		-- 3.0.1: 3,19
+		-- Druid: Natural Perfection (Rank 3) - 3,19
+		--        Your critical strike chance with all spells is increased by 3% and critical strikes against you 
+		--        give you the Natural Perfection effect reducing all damage taken by 2/3/4%.  Stacks up to 3 times.  Lasts 8 sec.
 		-- Druid: Protector of the Pack (Rank 5) - 2,22
-		--        Increases your attack power in Bear Form and Dire Bear Form by 2%/4%/6%, and for each friendly player in your party when you enter Bear Form or Dire Bear Form, damage you take is reduced while in Bear Form and Dire Bear Form by 1%/2%/3%.
+		--        Increases your attack power in Bear Form and Dire Bear Form by 2%/4%/6%, and for each friendly player 
+		--        in your party when you enter Bear Form or Dire Bear Form, damage you take is reduced while in Bear Form and Dire Bear Form by 1%/2%/3%.
 		-- Druid: Balance of Power (Rank 2) - 1,17
 		--        Increases your chance to hit with all spells by 2%/4% and reduces the damage taken by all spells by 3%/6%.
 		["MOD_DMG_TAKEN"] = {
@@ -6845,7 +6981,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.2,
 				},
-				["buff"] = GetSpellInfo(22812),		-- ["Barkskin"],
+				["buff"] = 22812,		-- ["Barkskin"],
 			},
 			{-- Improved Barkskin
 				["MELEE"] = true,
@@ -6861,7 +6997,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.05, -0.1,
 				},
-				["buff"] = GetSpellInfo(22812),		-- ["Barkskin"],
+				["buff"] = 22812,		-- ["Barkskin"],
 			},
 			{
 				["MELEE"] = true,
@@ -6877,7 +7013,8 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.03, -0.04,
 				},
-				["buff"] = GetSpellInfo(45283),		-- ["Natural Perfection"],
+				["buff"] = 45283,		-- ["Natural Perfection"],
+				["buffStack"] = 3, -- max number of stacks
 			},
 			{
 				["MELEE"] = true,
@@ -6893,7 +7030,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 1",
 			},
 			{
@@ -6910,7 +7047,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 2",
 			},
 			{
@@ -6927,7 +7064,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.06, -0.09,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 3",
 			},
 			{
@@ -6944,7 +7081,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.04, -0.08, -0.12,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 4",
 			},
 			{
@@ -6961,7 +7098,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 1",
 			},
 			{
@@ -6978,7 +7115,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 2",
 			},
 			{
@@ -6995,7 +7132,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.06, -0.09,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 3",
 			},
 			{
@@ -7012,7 +7149,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.04, -0.08, -0.12,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 				["condition"] = "GetNumPartyMembers() == 4",
 			},
 			{--Balance of Power
@@ -7027,7 +7164,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.06,
 				},
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 		},
 		-- Druid: Balance of Power (Rank 2) - 1,17
@@ -7045,7 +7182,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04,
 				},
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 		},
 		-- Druid: Thick Hide (Rank 3) - 2,5
@@ -7055,8 +7192,9 @@ local StatModTable = {
 		-- Druid: Dire Bear Form - Buff
 		--        Shapeshift into a dire bear, increasing melee attack power by 120, armor contribution from items by 370%, and stamina by 25%.
 		-- Druid: Moonkin Form - Buff
-		--        While in this form the armor contribution from items is increased by 400%, attack power is increased by 150% of your level and all party members within 30 yards have their spell critical chance increased by 5%.
-		--        While in this form the armor contribution from items is increased by 370% and all party and raid members within 45 yards have their spell critical chance increased by 5%.  Spell critical strikes in this form have a chance to instantly regenerate 2% of your total mana.
+		--        While in this form the armor contribution from items is increased by 370% and 
+		--        all party and raid members within 45 yards have their spell critical chance increased by 5%.  
+		--        Spell critical strikes in this form have a chance to instantly regenerate 2% of your total mana.
 		-- Druid: Improved Tree of Life (Rank 3) - 3,24
 		--        Increases your Armor while in Tree of Life Form by 67%/133%/200%
 		-- Druid: Survival of the Fittest (Rank 3) - 2,18
@@ -7074,19 +7212,19 @@ local StatModTable = {
 				["rank"] = {
 					1.8,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["rank"] = {
 					3.7,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{
 				["rank"] = {
 					3.7,
 				},
-				["buff"] = GetSpellInfo(24858),		-- ["Moonkin Form"],
+				["buff"] = 24858,		-- ["Moonkin Form"],
 			},
 			{
 				["tab"] = 3,
@@ -7094,7 +7232,7 @@ local StatModTable = {
 				["rank"] = {
 					0.67, 1.33, 2,
 				},
-				["buff"] = GetSpellInfo(33891),		-- ["Tree of Life"],
+				["buff"] = 33891,		-- ["Tree of Life"],
 			},
 			{
 				["tab"] = 2,
@@ -7102,7 +7240,7 @@ local StatModTable = {
 				["rank"] = {
 					0.11, 0.22, 0.33,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -7110,7 +7248,7 @@ local StatModTable = {
 				["rank"] = {
 					0.11, 0.22, 0.33,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Survival Instincts - Buff
@@ -7120,30 +7258,30 @@ local StatModTable = {
 				["rank"] = {
 					0.3,
 				},
-				["buff"] = GetSpellInfo(50322) or "SpellNotFound",		-- ["Survival Instincts"],
-				["buff2"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 50322,		-- ["Survival Instincts"],
+				["buff2"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["rank"] = {
 					0.3,
 				},
-				["buff"] = GetSpellInfo(50322) or "SpellNotFound",		-- ["Survival Instincts"],
-				["buff2"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 50322,		-- ["Survival Instincts"],
+				["buff2"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{
 				["rank"] = {
 					0.3,
 				},
-				["buff"] = GetSpellInfo(50322) or "SpellNotFound",		-- ["Survival Instincts"],
-				["buff2"] = GetSpellInfo(32356),		-- ["Cat Form"],
+				["buff"] = 50322,		-- ["Survival Instincts"],
+				["buff2"] = 32356,		-- ["Cat Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 		--        increases all of your total attributes by 1/2%.
-		-- Druid: Heart of the Wild (Rank 5) - 2,15
-		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 4%/8%/12%/16%/20% and while in Cat Form your Strength is increased by 4%/8%/12%/16%/20%.
-		-- 3.0.1: 2,17
-		--  9742: Stamina bonus changed to 2/4/6/8/10%. 
+		-- Druid: Heart of the Wild (Rank 5) - 2,17
+		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, 
+		--        while in Bear or Dire Bear Form your Stamina is increased by 2/4/6/8/10% and 
+		--        while in Cat Form your attack power is increased by 2/4/6/8/10%.
 		-- Druid: Bear Form - Stance (use stance because bear and dire bear increases are the same)
 		--        Shapeshift into a bear, increasing melee attack power by 30, armor contribution from items by 180%, and stamina by 25%.
 		-- Druid: Dire Bear Form - Stance (use stance because bear and dire bear increases are the same)
@@ -7158,25 +7296,14 @@ local StatModTable = {
 				["rank"] = {
 					0.01, 0.02,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 			{ -- Heart of the Wild: +2/4/6/8/10% stamina in bear / dire bear
 				["tab"] = 2,
 				["num"] = 17,
 				["rank"] = {
-					0.04, 0.08, 0.12, 0.16, 0.2,
+					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 17,
-				["rank"] = {
-					0.04, 0.08, 0.12, 0.16, 0.2,
-				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -7184,17 +7311,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 17,
-				["rank"] = {
-					0.02, 0.04, 0.06, 0.08, 0.1,
-				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 			{ -- Survival of the Fittest: 2%/4%/6% all stats
 				["tab"] = 2,
@@ -7207,13 +7324,13 @@ local StatModTable = {
 				["rank"] = {
 					0.25,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{ -- Bear Form / Dire Bear Form: +25% stamina
 				["rank"] = {
 					0.25,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -7238,10 +7355,10 @@ local StatModTable = {
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 		--        increases all of your total attributes by 1/2%.
-		-- Druid: Heart of the Wild (Rank 5) - 2,15
-		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 4%/8%/12%/16%/20% and while in Cat Form your Strength is increased by 4%/8%/12%/16%/20%.
-		-- 2.3.0: This talent no longer provides 4/8/12/16/20% bonus Strength in Cat Form. Instead it provides 2/4/6/8/10% bonus attack power.
-		-- 3.0.1: 2,17
+		-- Druid: Heart of the Wild (Rank 5) - 2,17
+		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, 
+		--        while in Bear or Dire Bear Form your Stamina is increased by 2/4/6/8/10% and 
+		--        while in Cat Form your attack power is increased by 2/4/6/8/10%.
 		-- Druid: Protector of the Pack (Rank 5) - 2,22
 		--        Increases your attack power in Bear Form and Dire Bear Form by 2%/4%/6%, and for each friendly player in your party when you enter Bear Form or Dire Bear Form, damage you take is reduced while in Bear Form and Dire Bear Form by 1%/2%/3%.
 		["MOD_AP"] = {
@@ -7258,7 +7375,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(32356),		-- ["Cat Form"],
+				["buff"] = 32356,		-- ["Cat Form"],
 			},
 			{
 				["tab"] = 2,
@@ -7266,7 +7383,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["buff"] = GetSpellInfo(32357),		-- ["Bear Form"],
+				["buff"] = 32357,		-- ["Bear Form"],
 			},
 			{
 				["tab"] = 2,
@@ -7274,7 +7391,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["buff"] = GetSpellInfo(9634),		-- ["Dire Bear Form"],
+				["buff"] = 9634,		-- ["Dire Bear Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -7300,7 +7417,9 @@ local StatModTable = {
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
 		--        increases all of your total attributes by 1/2%.
 		-- Druid: Heart of the Wild (Rank 5) - 2,17
-		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 4%/8%/12%/16%/20% and while in Cat Form your Strength is increased by 4%/8%/12%/16%/20%.
+		--        Increases your Intellect by 4%/8%/12%/16%/20%. In addition, 
+		--        while in Bear or Dire Bear Form your Stamina is increased by 2/4/6/8/10% and 
+		--        while in Cat Form your attack power is increased by 2/4/6/8/10%.
 		-- Druid: Survival of the Fittest (Rank 3) - 2,18
 		--        Increases all attributes by 2%/4%/6% and reduces the chance you'll be critically hit by melee attacks by 2%/4%/6%.
 		-- Druid: Furor (Rank 5) - 3,3
@@ -7333,7 +7452,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(24858),		-- ["Moonkin Form"],
+				["buff"] = 24858,		-- ["Moonkin Form"],
 			},
 		},
 		-- Druid: Improved Mark of the Wild (Rank 2) - 3,1
@@ -7365,8 +7484,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["DEATHKNIGHT"] = {
+	}
+elseif playerClass == "DEATHKNIGHT" then
+	StatModTable["DEATHKNIGHT"] = {
 		-- Death Knight: Forceful Deflection - Passive
 		--               Increases your Parry Rating by 25% of your total Strength.
 		["ADD_CR_PARRY_MOD_STR"] = {
@@ -7391,7 +7511,7 @@ local StatModTable = {
 		-- Death Knight: Blade Barrier - Buff - 1,3
 		--               Whenever your Blood Runes are on cooldown, you gain the Blade Barrier effect, which decreases damage taken by 1/2/3/4/5% for the next 10 sec.
 		-- Death Knight: Icebound Fortitude - Buff
-		--               Damage taken reduced by 20%+def*0.15.
+		--               Damage taken reduced by 30%+def*0.15.
 		-- Death Knight: Glyph of Icebound Fortitude - Major Glyph
 		--               Your Icebound Fortitude now always grants at least 30% damage reduction, regardless of your defense skill.
 		-- Death Knight: Bone Shield - Buff
@@ -7399,7 +7519,7 @@ local StatModTable = {
 		-- Death Knight: Anti-Magic Shell - Buff
 		--               Spell damage reduced by 75%.
 		-- Death Knight: Frost Presence - Buff
-		--               Increasing Stamina by 6%, armor contribution from cloth, leather, mail and plate items by 60%, and reducing damage taken by 5%.
+		--               Increasing Stamina by 6%, armor contribution from cloth, leather, mail and plate items by 60%, and reducing damage taken by 8%.
 		-- Death Knight: Will of the Necropolis (Rank 3) - 1,24
 		--               Damage that would take you below 35% health or taken while you are at 35% health is reduced by 5%/10%/15%
 		-- Death Knight: Magic Suppression (Rank 3) - 3,17
@@ -7427,7 +7547,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.01, -0.02, -0.03, -0.04, -0.05,
 				},
-				["buff"] = GetSpellInfo(55226),		-- ["Blade Barrier"],
+				["buff"] = 55226,		-- ["Blade Barrier"],
 			},
 			{
 				["MELEE"] = true,
@@ -7439,9 +7559,9 @@ local StatModTable = {
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["rank"] = {
-					-0.20,
+					-0.30,
 				},
-				["buff"] = GetSpellInfo(48792),		-- ["Icebound Fortitude"],
+				["buff"] = 48792,		-- ["Icebound Fortitude"],
 			},
 			{
 				["MELEE"] = true,
@@ -7455,7 +7575,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.10,
 				},
-				["buff"] = GetSpellInfo(48792),		-- ["Icebound Fortitude"],
+				["buff"] = 48792,		-- ["Icebound Fortitude"],
 				["glyph"] = 58625, -- Glyph of Icebound Fortitude
 			},
 			{
@@ -7470,7 +7590,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.20,
 				},
-				["buff"] = GetSpellInfo(49222),		-- ["Bone Shield"],
+				["buff"] = 49222,		-- ["Bone Shield"],
 			},
 			{
 				["HOLY"] = true,
@@ -7482,7 +7602,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.75,
 				},
-				["buff"] = GetSpellInfo(48707),		-- ["Anti-Magic Shell"],
+				["buff"] = 48707,		-- ["Anti-Magic Shell"],
 			},
 			{
 				["MELEE"] = true,
@@ -7497,6 +7617,22 @@ local StatModTable = {
 					-0.05,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
+				["old"] = 10371,
+			},
+			{
+				["MELEE"] = true,
+				["RANGED"] = true,
+				["HOLY"] = true,
+				["FIRE"] = true,
+				["NATURE"] = true,
+				["FROST"] = true,
+				["SHADOW"] = true,
+				["ARCANE"] = true,
+				["rank"] = {
+					-0.08,
+				},
+				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
+				["new"] = 10371,
 			},
 			{--Will of the Necropolis (Rank 3) - 1,24
 				["MELEE"] = true,
@@ -7526,7 +7662,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{--Magic Suppression (Rank 3) - 3,18
 				["HOLY"] = true,
@@ -7540,7 +7676,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 			{-- Rune of Spellshattering
 				["HOLY"] = true,
@@ -7623,8 +7759,9 @@ local StatModTable = {
 		-- Death Knight: Toughness (Rank 5) - 2,3
 		--               Increases your armor value from items by 2/4/6/8/10% and reduces the duration of all movement slowing effects by 50%.
 		-- Death Knight: Unbreakable Armor - Buff
-		--               Increases your armor by 25%, your total Strength by 10% and your Parry chance by 5% for 20 sec.
-		--        3.1.0: Reducing damage from all attacks by [0.05 * ARMOR], your total Strength by 25% for 20 sec.
+		--               Increases your armor by 25%, your total Strength by 20%
+		-- Death Knight: Glyph of Unbreakable Armor - Major Glyph
+		--               Increases the armor granted by Unbreakable Armor by 20%.
 		-- Death Knight: Frost Presence - Buff
 		--               Increasing Stamina by 6%, armor contribution from cloth, leather, mail and plate items by 60%, and reducing damage taken by 5%.
 		["MOD_ARMOR"] = {
@@ -7634,7 +7771,7 @@ local StatModTable = {
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{
 				["tab"] = 2,
@@ -7642,7 +7779,21 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
+			},
+			{
+				["rank"] = {
+					0.25,
+				},
+				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["new"] = 10371,
+			},
+			{
+				["rank"] = {
+					0.2,
+				},
+				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["glyph"] = 58635,		-- ["Glyph of Unbreakable Armor"],
 			},
 			{
 				["rank"] = {
@@ -7663,7 +7814,7 @@ local StatModTable = {
 					0.1,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{
 				["tab"] = 2,
@@ -7672,7 +7823,7 @@ local StatModTable = {
 					0.05, 0.1,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_BloodPresence",
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{
 				["tab"] = 2,
@@ -7681,7 +7832,7 @@ local StatModTable = {
 					0.05, 0.1,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_UnholyPresence",
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 		},
 		-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
@@ -7689,11 +7840,13 @@ local StatModTable = {
 		-- Enchant: Rune of the Stoneskin Gargoyle - EnchantID: 3847
 		--          +25 Defense and +2% Stamina to 2h weapon
 		-- Death Knight: Frost Presence - Buff
-		--               Increasing Stamina by 6%, armor contribution from cloth, leather, mail 
+		--               Increasing Stamina by 8%, armor contribution from cloth, leather, mail 
 		--               and plate items by 60%, and reducing damage taken by 5%.
 		-- Death Knight: Improved Frost Presence (Rank 2) - 2,21
 		--               While in Blood Presence or Unholy Presence, you retain 3/6% stamina from Frost Presence, 
 		--               and damage done to you is decreased by an additional 1/2% in Frost Presence.
+		-- Death Knight: Endless Winter (Rank 2) - 2,12
+		--               Your strength is increased by 2%/4%.
 		["MOD_STA"] = {
 			{
 				["tab"] = 1,
@@ -7701,7 +7854,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{
 				["tab"] = 1,
@@ -7709,7 +7862,7 @@ local StatModTable = {
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 			{
 				["rank"] = {
@@ -7720,10 +7873,10 @@ local StatModTable = {
 			},
 			{
 				["rank"] = {
-					0.06,
+					0.08,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_FrostPresence",
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 			{
 				["tab"] = 2,
@@ -7732,7 +7885,7 @@ local StatModTable = {
 					0.03, 0.06,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_BloodPresence",
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 			{
 				["tab"] = 2,
@@ -7741,15 +7894,21 @@ local StatModTable = {
 					0.03, 0.06,
 				},
 				["stance"] = "Interface\\Icons\\Spell_Deathknight_UnholyPresence",
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
+			},
+			{-- Endless Winter
+				["tab"] = 2,
+				["num"] = 12,
+				["rank"] = {
+					0.02, 0.04,
+				},
+				["new"] = 11685,
 			},
 		},
 		-- Death Knight: Veteran of the Third War (Rank 3) - 1,14
 		--               Increases your total Strength by 6% and your total Stamina by 3%.
 		-- Death Knight: Unbreakable Armor - Buff
-		--               Reducing damage from all attacks by [0.05 * ARMOR], your total Strength by 25% for 20 sec.
-		-- Death Knight: Glyph of Unbreakable Armor - Major Glyph
-		--               Unbreakable Armor grants an additional 5% parry chance but no longer increases your Strength.
+		--               Increasing your armor by 25% and increasing your Strength by 20% for 20 sec.
 		-- Death Knight: Ravenous Dead (Rank 3) - 3,7
 		--               Increases your total Strength 1%/2%/3% and the contribution your Ghouls get from your Strength and Stamina by 20%/40%/60%
 		-- Death Knight: Abomination's Might - 1,17
@@ -7764,25 +7923,17 @@ local StatModTable = {
 			},
 			{
 				["rank"] = {
-					0.25,
-				},
-				["buff"] = GetSpellInfo(51271),		-- ["Unbreakable Armor"],
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(51271),		-- ["Unbreakable Armor"],
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["old"] = 11685,
 			},
 			{
 				["rank"] = {
-					-0.1,
+					0.2,
 				},
-				["buff"] = GetSpellInfo(51271),		-- ["Unbreakable Armor"],
-				["glyph"] = 58635,		-- ["Glyph of Unbreakable Armor"],
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 51271,		-- ["Unbreakable Armor"],
+				["new"] = 11685,
 			},
 			{
 				["tab"] = 3,
@@ -7799,8 +7950,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["HUNTER"] = {
+	}
+elseif playerClass == "HUNTER" then
+	StatModTable["HUNTER"] = {
 		-- Hunter: Hunter vs. Wild (Rank 3) - 3,14
 		--         Increases you and your pet's attack power and ranged attack power equal to 10%/20%/30% of your total Stamina.
 		["ADD_AP_MOD_STA"] = {
@@ -7843,7 +7995,7 @@ local StatModTable = {
 				["rank"] = {
 					18,
 				},
-				["buff"] = GetSpellInfo(13163),		-- ["Aspect of the Monkey"],
+				["buff"] = 13163,		-- ["Aspect of the Monkey"],
 			},
 			{
 				["tab"] = 1,
@@ -7851,13 +8003,13 @@ local StatModTable = {
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = GetSpellInfo(13163),		-- ["Aspect of the Monkey"],
+				["buff"] = 13163,		-- ["Aspect of the Monkey"],
 			},
 			{
 				["rank"] = {
 					18, 18,
 				},
-				["buff"] = GetSpellInfo(61846),		-- ["Aspect of the Dragonhawk"],
+				["buff"] = 61846,		-- ["Aspect of the Dragonhawk"],
 			},
 			{
 				["tab"] = 1,
@@ -7865,7 +8017,7 @@ local StatModTable = {
 				["rank"] = {
 					2, 4, 6,
 				},
-				["buff"] = GetSpellInfo(61846),		-- ["Aspect of the Dragonhawk"],
+				["buff"] = 61846,		-- ["Aspect of the Dragonhawk"],
 			},
 		},
 		-- Hunter: Survival Instincts (Rank 2) - 3,7
@@ -7902,7 +8054,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.05,
 				},
-				["buff"] = GetSpellInfo(13163),		-- ["Aspect of the Monkey"],
+				["buff"] = 13163,		-- ["Aspect of the Monkey"],
 			},
 		},
 		-- Hunter: Thick Hide (Rank 3) - 1,5
@@ -7951,7 +8103,6 @@ local StatModTable = {
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 			{
 				["tab"] = 2,
@@ -7979,27 +8130,43 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["MAGE"] = {
+	}
+elseif playerClass == "MAGE" then
+	StatModTable["MAGE"] = {
 		-- Mage: Molten Armor (Rank 3) - Buff
 		--       increases your critical strike rating by 35% of your spirit
 		-- Mage: Glyph of Molten Armor - Major Glyph
 		--       Your Molten Armor grants an additional 20% of your spirit as critical strike rating.
+		-- Mage: Khadgar's Regalia(843), Sunstrider's Regalia(844) 2pc - Item Set
+		--       Increases the armor you gain from Ice Armor by 20%, the mana regeneration you gain from Mage Armor by 10%, 
+		--       and converts an additional 15% of your spirit into critical strike rating when Molten Armor is active.
 		["ADD_SPELL_CRIT_RATING_MOD_SPI"] = {
 			{
 				["rank"] = {
 					0.35, 0.35, 0.35, 0.35, 0.35, 0.35, -- 3 ranks
 				},
-				["buff"] = GetSpellInfo(30482), -- ["Molten Armor"],
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 30482, -- ["Molten Armor"],
 			},
 			{
 				["rank"] = {
 					0.2, 0.2, 0.2, 0.2, 0.2, 0.2, -- 3 ranks
 				},
-				["buff"] = GetSpellInfo(30482), -- ["Molten Armor"],
-				["glyph"] = 56382, -- Glyph of Mage Armor,
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 30482, -- ["Molten Armor"],
+				["glyph"] = 56382, -- Glyph of Molten Armor,
+			},
+			{
+				["rank"] = {
+					0.15, 0.15, 0.15, 0.15, 0.15, 0.15, -- 3 ranks
+				},
+				["buff"] = 30482, -- ["Molten Armor"],
+				["itemset"] = {843, 2}, -- Khadgar's Regalia,
+			},
+			{
+				["rank"] = {
+					0.15, 0.15, 0.15, 0.15, 0.15, 0.15, -- 3 ranks
+				},
+				["buff"] = 30482, -- ["Molten Armor"],
+				["itemset"] = {844, 2}, -- Sunstrider's Regalia,
 			},
 		},
 		-- Mage: Arcane Fortitude - 1,4
@@ -8014,74 +8181,61 @@ local StatModTable = {
 			},
 		},
 		-- Mage: Arcane Meditation (Rank 3) - 1,13
-		--       Allows 10%/20%/30% of your Mana regeneration to continue while casting.
-		-- 3.1.0: Now grants 17/33/50% of mana regeneration while casting. 
+		--       Allows 17/33/50% of your Mana regeneration to continue while casting.
 		-- Mage: Mage Armor (Rank 6) - Buff
-		--       Resistance to all magic schools increased by 40 and allows 30% of your mana regeneration to continue while casting. Duration of all harmful Magic effects reduced by 50%.
-		-- 3.1.0: Now grants 17/33/50% of mana regeneration while casting. 
+		--       Resistance to all magic schools increased by 40 and allows 50% of your mana regeneration to continue while casting.
+		-- Mage: Khadgar's Regalia(843), Sunstrider's Regalia(844) 2pc - Item Set
+		--       Increases the armor you gain from Ice Armor by 20%, the mana regeneration you gain from Mage Armor by 10%, 
+		--       and converts an additional 15% of your spirit into critical strike rating when Molten Armor is active.
 		-- Mage: Glyph of Mage Armor - Major Glyph
 		--       Your Mage Armor spell grants an additional 20% mana regeneration while casting.
 		-- Mage: Pyromaniac (Rank 3) - 2,19
-		--       Increases chance to critically hit by 1%/2%/3% and allows 10/20/30% of your mana regeneration to continue while casting.
-		-- 3.1.0: Now grants 17/33/50% of mana regeneration while casting. 
+		--       Increases chance to critically hit by 1%/2%/3% and allows 17/33/50% of your mana regeneration to continue while casting.
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
-			{
-				["tab"] = 1,
-				["num"] = 13,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 1,
 				["num"] = 13,
 				["rank"] = {
 					0.17, 0.33, 0.5,
 				},
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["rank"] = {
-					0.3, 0.3, 0.3, 0.3, 0.3, 0.3, -- 6 ranks
-				},
-				["buff"] = GetSpellInfo(6117), -- ["Mage Armor"],
-				["condition"] = "wowBuildNo < 9742",
 			},
 			{
 				["rank"] = {
 					0.5, 0.5, 0.5, 0.5, 0.5, 0.5, -- 6 ranks
 				},
-				["buff"] = GetSpellInfo(6117), -- ["Mage Armor"],
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 6117, -- ["Mage Armor"],
+			},
+			{
+				["rank"] = {
+					0.1, 0.1, 0.1, 0.1, 0.1, 0.1, -- 3 ranks
+				},
+				["buff"] = 6117, -- ["Mage Armor"],
+				["itemset"] = {843, 2}, -- Khadgar's Regalia,
+			},
+			{
+				["rank"] = {
+					0.1, 0.1, 0.1, 0.1, 0.1, 0.1, -- 3 ranks
+				},
+				["buff"] = 6117, -- ["Mage Armor"],
+				["itemset"] = {844, 2}, -- Sunstrider's Regalia,
 			},
 			{
 				["rank"] = {
 					0.2, 0.2, 0.2, 0.2, 0.2, 0.2, -- 6 ranks
 				},
-				["buff"] = GetSpellInfo(6117), -- ["Mage Armor"],
+				["buff"] = 6117, -- ["Mage Armor"],
 				["glyph"] = 56383, -- Glyph of Mage Armor,
 			},
 			{
 				["tab"] = 2,
 				["num"] = 19,
 				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 19,
-				["rank"] = {
 					0.17, 0.33, 0.5,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Mage: Mind Mastery (Rank 5) - 1,22
-		--       Increases spell damage by up to 5%/10%/15%/20%/25% of your total Intellect.
-		-- 3.0.1: 1,25: Increases spell power by up to 3%/6%/9%/12%/15% of your total Intellect.
+		-- Mage: Mind Mastery (Rank 5) - 1,25
+		--       Increases spell damage by up to 3%/6%/9%/12%/15% of your total Intellect.
 		["ADD_SPELL_DMG_MOD_INT"] = {
 			{
 				["tab"] = 1,
@@ -8130,7 +8284,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.15, -0.30,
 				},
-				["buff"] = GetSpellInfo(46989),		-- ["Improved Blink"],
+				["buff"] = 46989,		-- ["Improved Blink"],
 			},
 		},
 		-- Mage: Prismatic Cloak (Rank 3) - 1,16
@@ -8186,18 +8340,18 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Mage: Arcane Instability (Rank 3) - 1,17
+		-- Mage: Arcane Instability (Rank 3) - 1,19
 		--       Increases your spell damage and critical strike chance by 1%/2%/3%.
-		-- 3.0.1: 1,19
-		["MOD_SPELL_DMG"] = {
-			{
-				["tab"] = 1,
-				["num"] = 19,
-				["rank"] = {
-					0.01, 0.02, 0.03,
-				},
-			},
-		},
+		-- This does not increase spell power
+		-- ["MOD_SPELL_DMG"] = {
+			-- {
+				-- ["tab"] = 1,
+				-- ["num"] = 19,
+				-- ["rank"] = {
+					-- 0.01, 0.02, 0.03,
+				-- },
+			-- },
+		-- },
 		-- Mage: Arcane Mind (Rank 5) - 1,15
 		--       Increases your total Intellect by 3%/6%/9%/12%/15%.
 		-- 3.0.1: 1,17
@@ -8221,66 +8375,60 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["PALADIN"] = {
-		-- Paladin: Sheath of Light (Rank 3) - 3,25
+	}
+elseif playerClass == "PALADIN" then
+	StatModTable["PALADIN"] = {
+		-- Paladin: Sheath of Light (Rank 3) - 3,24
 		--          Increases your spell power by an amount equal to 10%/20%/30% of your attack power
 		--   3.1.0: 3,24
 		["ADD_SPELL_DMG_MOD_AP"] = {
 			{
 				["tab"] = 3,
-				["num"] = 25,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 3,
 				["num"] = 24,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		["ADD_HEALING_MOD_AP"] = {
 			{
 				["tab"] = 3,
-				["num"] = 25,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 3,
 				["num"] = 24,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Paladin: Touched by the Light (Rank 3) - 2,20
-		--          Increases your spell power by an amount equal to 10%/20%/30% of your Stamina
-		--   3.1.0: 2,21
+		-- Paladin: Touched by the Light (Rank 3) - 2,21
+		--          Increases your spell power by an amount equal to 20/40/60% of your Strength
+		["ADD_SPELL_DMG_MOD_STR"] = {
+			{
+				["tab"] = 2,
+				["num"] = 21,
+				["rank"] = {
+					0.2, 0.4, 0.6,
+				},
+				["new"] = 10371,
+			},
+		},
+		["ADD_HEALING_MOD_STR"] = {
+			{
+				["tab"] = 2,
+				["num"] = 20,
+				["rank"] = {
+					0.2, 0.4, 0.6,
+				},
+				["new"] = 10371,
+			},
+		},
 		["ADD_SPELL_DMG_MOD_STA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 20,
+				["num"] = 21,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo >= 9742",
+				["old"] = 10371,
 			},
 		},
 		["ADD_HEALING_MOD_STA"] = {
@@ -8290,21 +8438,11 @@ local StatModTable = {
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo >= 9742",
+				["old"] = 10371,
 			},
 		},
-		-- Paladin: Holy Guidance (Rank 5) - 1,19
-		--          Increases your spell damage and healing by 7%/14%/21%/28%/35% of your total Intellect.
-		--   3.0.1: 1,21
-		--    8926: Increases your spell power by 4%/8%/12%/16%/20% of your total Intellect.
+		-- Paladin: Holy Guidance (Rank 5) - 1,21
+		--          Increases your spell power by 4%/8%/12%/16%/20% of your total Intellect.
 		["ADD_SPELL_DMG_MOD_INT"] = {
 			{
 				["tab"] = 1,
@@ -8314,10 +8452,8 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Paladin: Holy Guidance (Rank 5) - 1,19
+		-- Paladin: Holy Guidance (Rank 5) - 1,21
 		--          Increases your spell damage and healing by 7%/14%/21%/28%/35% of your total Intellect.
-		--   3.0.1: 1,21
-		--    8926: Increases your spell power by 4%/8%/12%/16%/20% of your total Intellect.
 		["ADD_HEALING_MOD_INT"] = {
 			{
 				["tab"] = 1,
@@ -8327,52 +8463,21 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Paladin: Anticipation (Rank 5) - 2,2
+		-- Paladin: Anticipation (Rank 5) - 2,5
 		--          Increases your chance to dodge by 1%/2%/3%/4%/5%.
-		--    8926: 2,6
-		--   3.1.0: 2,5
 		["ADD_DODGE"] = {
-			{
-				["tab"] = 2,
-				["num"] = 6,
-				["rank"] = {
-					1, 2, 3, 4, 5,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 2,
 				["num"] = 5,
 				["rank"] = {
 					1, 2, 3, 4, 5,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Paladin: Divine Purpose (Rank 3) - 3,15
-		--          Melee and ranged critical strikes against you cause 4%/7%/10% less damage.
-		--   3.0.1: 3,15: Reduces your chance to be hit by spells and ranged attacks by 1%/2%/3% and reduces the duration of movement slowing effects by 30%.
-		--    8926: Reduces your chance to be hit by spells and ranged attacks by 2%/4% and gives your Hand of Freedom spell a 50%/100% chance to remove any Stun effects on the target.
-		--   3.1.0: 3,16
-		-- Paladin: Pursuit of Justice (Rank 3) - 3,9
-		--          Reduces the chance you'll be hit by spells by 1%/2%/3% and increases movement and mounted movement speed by 5%/10%/15%. This does not stack with other movement speed increasing effects.
-		--   3.0.1: Reduces the chance you'll be hit by spells by 1%/2% and increases movement and mounted movement speed by 8%/15%.
+		-- Paladin: Divine Purpose (Rank 2) - 3,16
+		--          Reduces your chance to be hit by spells and ranged attacks by 2%/4% and 
+		--          gives your Hand of Freedom spell a 50%/100% chance to remove any Stun effects on the target.
 		["ADD_HIT_TAKEN"] = {
-			{
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 15,
-				["rank"] = {
-					-0.02, -0.04,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["RANGED"] = true,
 				["HOLY"] = true,
@@ -8386,32 +8491,20 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04,
 				},
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 3,
-				["num"] = 9,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
 			},
 		},
 		-- Paladin: Blessed Life (Rank 3) - 1,19
 		--          All attacks against you have a 4%/7%/10% chance to cause half damage.
-		-- Paladin: Ardent Defender (Rank 5) - 2,18
-		--          When you have less than 35% health, all damage taken is reduced by 6%/12%/18%/24%/30%.
+		-- Paladin: Ardent Defender (Rank 3) - 2,18
+		--          When you have less than 35% health, all damage taken is reduced by 7/13/20%.
 		-- Paladin: Improved Righteous Fury (Rank 3) - 2,7
 		--          While Righteous Fury is active, all damage taken is reduced by 2%/4%/6%.
 		-- Paladin: Guarded by the Light (Rank 2) - 2,23
 		--          Reduces spell damage taken by 3%/6% and reduces the mana cost of your Holy Shield, Avenger's Shield and Shield of Righteousness spells by 15%/30%.
 		-- Paladin: Shield of the Templar (Rank 3) - 2,24
-		--    9095: Now also reduces all damage taken by 1/2/3%
+		--          Reduces all damage taken by 1/2/3%
+		-- Paladin: Glyph of Divine Plea - Major Glyph
+		--          While Divine Plea is active, you take 3% reduced damage from all sources.
 		["MOD_DMG_TAKEN"] = {
 			{
 				["MELEE"] = true,
@@ -8428,23 +8521,7 @@ local StatModTable = {
 					-0.02, -0.035, -0.05,
 				},
 			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 17,
-				["rank"] = {
-					-0.06, -0.12, -0.18, -0.24, -0.3,
-				},
-				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35) and (wowBuildNo < 9742)",
-			},
-			{
+			{-- Ardent Defender
 				["MELEE"] = true,
 				["RANGED"] = true,
 				["HOLY"] = true,
@@ -8458,9 +8535,27 @@ local StatModTable = {
 				["rank"] = {
 					-0.1, -0.2, -0.3,
 				},
-				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35) and (wowBuildNo >= 9742)",
+				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35)",
+				["old"] = 10371,
 			},
-			{
+			{-- Ardent Defender
+				["MELEE"] = true,
+				["RANGED"] = true,
+				["HOLY"] = true,
+				["FIRE"] = true,
+				["NATURE"] = true,
+				["FROST"] = true,
+				["SHADOW"] = true,
+				["ARCANE"] = true,
+				["tab"] = 2,
+				["num"] = 18,
+				["rank"] = {
+					-0.07, -0.13, -0.2,
+				},
+				["condition"] = "((UnitHealth('player') / UnitHealthMax('player')) < 0.35)",
+				["new"] = 10371,
+			},
+			{-- Improved Righteous Fury
 				["MELEE"] = true,
 				["RANGED"] = true,
 				["HOLY"] = true,
@@ -8474,23 +8569,9 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["buff"] = GetSpellInfo(25781),		-- ["Righteous Fury"],
+				["buff"] = 25781,		-- ["Righteous Fury"],
 			},
-			{
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					-0.03, -0.06,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
+			{-- Guarded by the Light
 				["HOLY"] = true,
 				["FIRE"] = true,
 				["NATURE"] = true,
@@ -8502,25 +8583,8 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.06,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["tab"] = 2,
-				["num"] = 23,
-				["rank"] = {
-					-0.01, -0.02, -0.03,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
+			{-- Shield of the Templar
 				["MELEE"] = true,
 				["RANGED"] = true,
 				["HOLY"] = true,
@@ -8534,7 +8598,21 @@ local StatModTable = {
 				["rank"] = {
 					-0.01, -0.02, -0.03,
 				},
-				["condition"] = "wowBuildNo >= 9742",
+			},
+			{-- Glyph of Divine Plea
+				["MELEE"] = true,
+				["RANGED"] = true,
+				["HOLY"] = true,
+				["FIRE"] = true,
+				["NATURE"] = true,
+				["FROST"] = true,
+				["SHADOW"] = true,
+				["ARCANE"] = true,
+				["rank"] = {
+					-0.03,
+				},
+				["buff"] = 54428,		-- ["Divine Plea"],
+				["glyph"] = 63223, -- Glyph of Shield Wall,
 			},
 		},
 		-- Paladin: Toughness (Rank 5) - 2,8
@@ -8548,57 +8626,29 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Paladin: Divine Strength (Rank 5) - 2,3
+		-- Paladin: Divine Strength (Rank 5) - 2,2
 		--          Increases your total Strength by 3%/6%/9%/12%/15%.
-		--   3.1.0: 2,2
 		["MOD_STR"] = {
-			{
-				["tab"] = 2,
-				["num"] = 3,
-				["rank"] = {
-					0.03, 0.06, 0.09, 0.12, 0.15,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 2,
 				["num"] = 2,
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Paladin: Sacred Duty (Rank 2) - 2,14
-		--          Increases your total Stamina by 3%/8%
-		--   3.1.0: Increases your total Stamina by 4%/8%
-		-- Paladin: Combat Expertise (Rank 3) - 2,19
+		--          Increases your total Stamina by 4%/8%
+		--          Sacred Duty now provides 2 / 4% Stamina, down from 4 / 8% Stamina.
+		-- Paladin: Combat Expertise (Rank 3) - 2,20
 		--          Increases your expertise by 2/4/6, total Stamina and chance to critically hit by 2%/4%/6%.
-		--   3.1.0: 2,20
 		["MOD_STA"] = {
 			{
 				["tab"] = 2,
 				["num"] = 14,
 				["rank"] = {
-					0.03, 0.08,
+					0.02, 0.04,
 				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 14,
-				["rank"] = {
-					0.04, 0.08,
-				},
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 19,
-				["rank"] = {
-					0.02, 0.04, 0.06,
-				},
-				["condition"] = "wowBuildNo < 9742",
 			},
 			{
 				["tab"] = 2,
@@ -8606,7 +8656,6 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Paladin: Divine Intellect (Rank 5) - 1,4
@@ -8618,7 +8667,7 @@ local StatModTable = {
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
-				["condition"] = "wowBuildNo < 10147",
+				["old"] = 10147,
 			},
 			{
 				["tab"] = 1,
@@ -8626,32 +8675,24 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["condition"] = "wowBuildNo >= 10147",
+				["new"] = 10147,
 			},
 		},
-		-- Paladin: Redoubt (Rank 3) - 2,18
-		--          Increases your block value by 10%/20%/30% and damaging melee and ranged attacks against you have a 10% chance to increase your chance to block by 30%.  Lasts 10 sec or 5 blocks.
-		--   3.1.0: 2,19
+		-- Paladin: Redoubt (Rank 3) - 2,19
+		--          Increases your block value by 10%/20%/30% and 
+		--          damaging melee and ranged attacks against you have a 10% chance to increase your chance to block by 30%.  Lasts 10 sec or 5 blocks.
 		["MOD_BLOCK_VALUE"] = {
-			{
-				["tab"] = 2,
-				["num"] = 18,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 2,
 				["num"] = 19,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-	},
-	["PRIEST"] = {
+	}
+elseif playerClass == "PRIEST" then
+	StatModTable["PRIEST"] = {
 		-- Priest: Focused Power (Rank 2) - 1,16
 		--         Increases your total spell damage and healing done by 2%/4%.
 		-- ["MOD_SPELL_DMG"] = {
@@ -8674,31 +8715,21 @@ local StatModTable = {
 				-- },
 			-- },
 		-- },
-		-- Priest: Meditation (Rank 3) - 1,9
-		--         Allows 10/20/30% of your Mana regeneration to continue while casting.
-		--  3.1.0: 1,7: Allows 17/33/50% of your Mana regeneration to continue while casting.
+		-- Priest: Meditation (Rank 3) - 1,7
+		--         Allows 17/33/50% of your Mana regeneration to continue while casting.
 		["ADD_MANA_REG_MOD_NORMAL_MANA_REG"] = {
-			{
-				["tab"] = 1,
-				["num"] = 9,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 1,
 				["num"] = 7,
 				["rank"] = {
 					0.17, 0.33, 0.5,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Priest: Spiritual Guidance (Rank 5) - 2,14
 		--         Increases spell power by up to 5%/10%/15%/20%/25% of your total Spirit.
 		-- Priest: Twisted Faith (Rank 5) - 3,26
-		--         Increases your spell power by 2%/4%/6%/8%/10% of your total Spirit
+		--         Increases your spell power by 4/8/12/16/20% of your total Spirit
 		["ADD_SPELL_DMG_MOD_SPI"] = {
 			{
 				["tab"] = 2,
@@ -8713,12 +8744,21 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
+				["old"] = 10371,
+			},
+			{
+				["tab"] = 3,
+				["num"] = 26,
+				["rank"] = {
+					0.04, 0.08, 0.12, 0.16, 0.2,
+				},
+				["new"] = 10371,
 			},
 		},
 		-- Priest: Spiritual Guidance (Rank 5) - 2,14
 		--         Increases spell power by up to 5%/10%/15%/20%/25% of your total Spirit.
 		-- Priest: Twisted Faith (Rank 5) - 3,26
-		--         Increases your spell power by 2%/4%/6%/8%/10% of your total Spirit
+		--         Increases your spell power by 4/8/12/16/20% of your total Spirit
 		["ADD_HEALING_MOD_SPI"] = {
 			{
 				["tab"] = 2,
@@ -8733,6 +8773,15 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
+				["old"] = 10371,
+			},
+			{
+				["tab"] = 3,
+				["num"] = 26,
+				["rank"] = {
+					0.04, 0.08, 0.12, 0.16, 0.2,
+				},
+				["new"] = 10371,
 			},
 		},
 		-- Priest: Spell Warding (Rank 5) - 2,4
@@ -8765,7 +8814,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.9,
 				},
-				["buff"] = GetSpellInfo(47585),		-- ["Dispersion"],
+				["buff"] = 47585,		-- ["Dispersion"],
 			},
 		},
 		-- Priest: Enlightenment (Rank 5) - 1,17
@@ -8786,28 +8835,17 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Priest: Mental Strength (Rank 5) - 1,13
+		-- Priest: Mental Strength (Rank 5) - 1,14
 		--         Increases your total Intellect by 3%/6%/9%/12%/15%.
-		--  3.1.0: 1,14
 		["MOD_INT"] = {
-			{
-				["tab"] = 1,
-				["num"] = 13,
-				["rank"] = {
-					0.03, 0.06, 0.09, 0.12, 0.15,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
 			{
 				["tab"] = 1,
 				["num"] = 14,
 				["rank"] = {
 					0.03, 0.06, 0.09, 0.12, 0.15,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Priest: Enlightenment (Rank 5) - 1,17
@@ -8830,8 +8868,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["ROGUE"] = {
+	}
+elseif playerClass == "ROGUE" then
+	StatModTable["ROGUE"] = {
 		-- Rogue: Deadliness (Rank 5) - 3,18
 		--        Increases your attack power by 2%/4%/6%/8%/10%.
 		-- Rogue: Savage Combat (Rank 2) - 2,26
@@ -8853,7 +8892,7 @@ local StatModTable = {
 			},
 		},
 		-- Rogue: Lightning Reflexes (Rank 5) - 2,12
-		--        Increases your Dodge chance by 1%/2%/3%/4%/5%.
+		--        Increases your Dodge chance by 2/4/6% and gives you 4/7/10% melee haste.
 		-- Rogue: Evasion (Rank 1/2) - Buff
 		--        Dodge chance increased by 50%/50% and chance ranged attacks hit you reduced by 0%/25%.
 		-- Rogue: Ghostly Strike - Buff
@@ -8863,20 +8902,20 @@ local StatModTable = {
 				["tab"] = 2,
 				["num"] = 12,
 				["rank"] = {
-					1, 2, 3, 4, 5,
+					2, 4, 6,
 				},
 			},
 			{
 				["rank"] = {
 					50, 50,
 				},
-				["buff"] = GetSpellInfo(26669),		-- ["Evasion"],
+				["buff"] = 26669,		-- ["Evasion"],
 			},
 			{
 				["rank"] = {
 					15,
 				},
-				["buff"] = GetSpellInfo(31022),		-- ["Ghostly Strike"],
+				["buff"] = 31022,		-- ["Ghostly Strike"],
 			},
 		},
 		-- Rogue: Sleight of Hand (Rank 2) - 3,4
@@ -8923,14 +8962,14 @@ local StatModTable = {
 				["rank"] = {
 					-0.9,
 				},
-				["buff"] = GetSpellInfo(39666),		-- ["Cloak of Shadows"],
+				["buff"] = 39666,		-- ["Cloak of Shadows"],
 			},
 			{
 				["RANGED"] = true,
 				["rank"] = {
 					0, -0.25,
 				},
-				["buff"] = GetSpellInfo(26669),		-- ["Evasion"],
+				["buff"] = 26669,		-- ["Evasion"],
 			},
 		},
 		-- Rogue: Deadened Nerves (Rank 3) - 1,20
@@ -8974,18 +9013,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["SHAMAN"] = {
-		-- Shaman: Unleashed Rage - Buff
-		--         Melee attack power increased by 4/7/10%.
-		["MOD_AP"] = {
-			{
-				["rank"] = {
-					0.04, 0.07, 0.1,
-				},
-				["buff"] = GetSpellInfo(30803),		-- ["Unleashed Rage"],
-			},
-		},
+	}
+elseif playerClass == "SHAMAN" then
+	StatModTable["SHAMAN"] = {
 		-- Shaman: Mental Dexterity (Rank 3) - 2,15
 		--         Increases your Attack Power by 33%/66%/100% of your Intellect.
 		["ADD_AP_MOD_INT"] = {
@@ -8997,46 +9027,28 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Shaman: Mental Quickness (Rank 3) - 2,24
+		-- Shaman: Mental Quickness (Rank 3) - 2,25
 		--         Reduces the mana cost of your instant cast spells by 2%/4%/6% and increases your spell power equal to 10%/20%/30% of your attack power.
 		--  3.1.0: 2,25
 		["ADD_SPELL_DMG_MOD_AP"] = {
 			{
 				["tab"] = 2,
-				["num"] = 24,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
 				["num"] = 25,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Shaman: Mental Quickness (Rank 3) - 2,24
+		-- Shaman: Mental Quickness (Rank 3) - 2,25
 		--         Reduces the mana cost of your instant cast spells by 2%/4%/6% and increases your spell power equal to 10%/20%/30% of your attack power.
 		--  3.1.0: 2,25
 		["ADD_HEALING_MOD_AP"] = {
 			{
 				["tab"] = 2,
-				["num"] = 24,
-				["rank"] = {
-					0.1, 0.2, 0.3,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
 				["num"] = 25,
 				["rank"] = {
 					0.1, 0.2, 0.3,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Shaman: Unrelenting Storm (Rank 3) - 1,13
@@ -9074,26 +9086,11 @@ local StatModTable = {
 		},
 		-- Shaman: Elemental Warding (Rank 3) - 1,4
 		--         Now reduces all damage taken by 2/4/6%.
-		--  3.0.8: Now reduces all damage taken by 2/4/6%. Changed from only reducing Nature, Fire and Frost by 4/7/10%.
 		-- Shaman: Shamanistic Rage - Buff
 		--         Reduces all damage taken by 30% and gives your successful melee attacks a chance to regenerate mana equal to 15% of your attack power. Lasts 30 sec.
-		-- Shaman: Elemental Shields (Rank 3) - 1,17
-		--         Reduces all physical damage taken by 2%/4%/6%.
-		--  3.0.8: Removed
 		-- Shaman: Astral Shift - Buff
 		--         When stunned, feared or silenced you shift into the Astral Plane reducing all damage taken by 30% for the duration of the stun, fear or silence effect.
 		["MOD_DMG_TAKEN"] = {
-			{
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["tab"] = 1,
-				["num"] = 14,
-				["rank"] = {
-					-0.04, -0.07, -0.1,
-				},
-				["condition"] = "wowBuildNo < 9438",
-			},
 			{
 				["MELEE"] = true,
 				["RANGED"] = true,
@@ -9108,7 +9105,6 @@ local StatModTable = {
 				["rank"] = {
 					-0.02, -0.04, -0.06,
 				},
-				["condition"] = "wowBuildNo >= 9438",
 			},
 			{
 				["MELEE"] = true,
@@ -9122,17 +9118,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.3,
 				},
-				["buff"] = GetSpellInfo(30823),		-- ["Shamanistic Rage"],
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["tab"] = 1,
-				["num"] = 17,
-				["rank"] = {
-					-0.02, -0.04, -0.06,
-				},
-				["condition"] = "wowBuildNo < 9438",
+				["buff"] = 30823,		-- ["Shamanistic Rage"],
 			},
 			{
 				["MELEE"] = true,
@@ -9146,20 +9132,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.3,
 				},
-				["buff"] = GetSpellInfo(51479),		-- ["Astral Shift"],
-			},
-		},
-		-- Shaman: Toughness (Rank 5) - 2,12
-		--         Increases your armor value from items by 2%/4%/6%/8%/10%.
-		--  3.1.0: Increases your total stamina by 2/4/6/8/10%. 
-		["MOD_ARMOR"] = {
-			{
-				["tab"] = 2,
-				["num"] = 12,
-				["rank"] = {
-					0.02, 0.04, 0.06, 0.08, 0.1,
-				},
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 51479,		-- ["Astral Shift"],
 			},
 		},
 		-- Shaman: Toughness (Rank 5) - 2,12
@@ -9171,7 +9144,6 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Shaman: Ancestral Knowledge (Rank 5) - 2,3
@@ -9185,8 +9157,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["WARLOCK"] = {
+	}
+elseif playerClass == "WARLOCK" then
+	StatModTable["WARLOCK"] = {
 		-- Warlock: Metamorphosis - Buff
 		--          This form increases your armor by 600%, damage by 20%, reduces the chance you'll be critically hit by melee attacks by 6% and reduces the duration of stun and snare effects by 50%.
 		["ADD_CRIT_TAKEN"] = {
@@ -9195,7 +9168,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.06,
 				},
-				["buff"] = GetSpellInfo(47241),		-- ["Metamorphosis"],
+				["buff"] = 47241,		-- ["Metamorphosis"],
 			},
 		},
 		-- Warlock: Metamorphosis - Buff
@@ -9205,7 +9178,7 @@ local StatModTable = {
 				["rank"] = {
 					6,
 				},
-				["buff"] = GetSpellInfo(47241),		-- ["Metamorphosis"],
+				["buff"] = 47241,		-- ["Metamorphosis"],
 			},
 		},
 		-- Warlock: Demonic Pact - 2,26
@@ -9220,7 +9193,7 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(47240),		-- ["Demonic Pact"],
+				["buff"] = 47240,		-- ["Demonic Pact"],
 			},
 		},
 		-- Warlock: Demonic Pact - 2,26
@@ -9232,29 +9205,22 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06, 0.08, 0.1,
 				},
-				["buff"] = GetSpellInfo(47240),		-- ["Demonic Pact"],
+				["buff"] = 47240,		-- ["Demonic Pact"],
 			},
 		},
 		-- Warlock: Fel Armor (Rank 4) - Buff
 		--          Surrounds the caster with fel energy, increasing spell power by 50/100/150/180 plus additional spell power equal to 30% of your Spirit.
-		-- Warlock: Demonic Aegis (Rank 3) - 2,10
+		-- Warlock: Demonic Aegis (Rank 3) - 2,11
 		--          Increases the effectiveness of your Demon Armor and Fel Armor spells by 10%/20%/30%.
-		--   3.1.0: 2,11
+		-- Warlock: Glyph of Life Tap - Major Glyph
+		--          When you use Life Tap, you gain 20% of your Spirit as spell power for 40 sec.
+		--          Life Tap - Buff
 		["ADD_SPELL_DMG_MOD_SPI"] = {
 			{
 				["rank"] = {
 					0.3, 0.3, 0.3, 0.3, -- 4 ranks
 				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-			},
-			{
-				["tab"] = 2,
-				["num"] = 10,
-				["rank"] = {
-					0.03, 0.06, 0.09,
-				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 28176, -- ["Fel Armor"],
 			},
 			{
 				["tab"] = 2,
@@ -9262,13 +9228,18 @@ local StatModTable = {
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 28176, -- ["Fel Armor"],
+			},
+			{
+				["rank"] = {
+					0.2,
+				},
+				["buff"] = 63321, -- ["Life Tap"],
 			},
 		},
 		-- Warlock: Fel Armor (Rank 4) - Buff
 		--          Surrounds the caster with fel energy, increasing spell power by 50/100/150/180 plus additional spell power equal to 30% of your Spirit.
-		-- Warlock: Demonic Aegis (Rank 3) - 2,10
+		-- Warlock: Demonic Aegis (Rank 3) - 2,11
 		--          Increases the effectiveness of your Demon Armor and Fel Armor spells by 10%/20%/30%.
 		--   3.1.0: 2,11
 		["ADD_HEALING_MOD_SPI"] = {
@@ -9276,16 +9247,7 @@ local StatModTable = {
 				["rank"] = {
 					0.3, 0.3, 0.3, 0.3, -- 4 ranks
 				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-			},
-			{
-				["tab"] = 2,
-				["num"] = 10,
-				["rank"] = {
-					0.03, 0.06, 0.09,
-				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-				["condition"] = "wowBuildNo < 9742",
+				["buff"] = 28176,		-- ["Fel Armor"],
 			},
 			{
 				["tab"] = 2,
@@ -9293,70 +9255,86 @@ local StatModTable = {
 				["rank"] = {
 					0.03, 0.06, 0.09,
 				},
-				["buff"] = GetSpellInfo(28176),		-- ["Fel Armor"],
-				["condition"] = "wowBuildNo >= 9742",
+				["buff"] = 28176,		-- ["Fel Armor"],
+			},
+			{
+				["rank"] = {
+					0.2,
+				},
+				["buff"] = 63321, -- ["Life Tap"],
+			},
+		},
+		-- 3.3.0 Imp stam total 233: pet base 118, player base 90, pet sta from player sta 0.75, pet kings 1.1, fel vitality 1.15
+		-- /dump floor((118+floor(90*0.75))*1.1)*1.05 = 233.45 match
+		-- /dump (118+floor(90*0.75))*1.1*1.05 = 224.025 wrong
+		-- Warlock: Fel Vitality (Rank 3) - 2,7
+		--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
+		["ADD_PET_STA_MOD_STA"] = {
+			{ -- Base
+				["rank"] = {
+					0.75-1,
+				},
+				["condition"] = "UnitExists('pet')",
+			},
+			{ -- Blessings on pet: floor() * 1.1
+				["rank"] = {
+					0.1,
+				}, -- BoK, BoSanc
+				["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+			},
+			{ -- Fel Vitality: floor() * 1.15
+				["tab"] = 2,
+				["num"] = 7,
+				["rank"] = {
+					0.05, 0.1, 0.15,
+				},
+				["condition"] = "UnitExists('pet')",
+			},
+		},
+		["ADD_PET_INT_MOD_INT"] = {
+			{ -- Base
+				["rank"] = {
+					0.3-1,
+				},
+				["condition"] = "UnitExists('pet')",
+			},
+			{ -- Blessings on pet
+				["rank"] = {
+					0.1,
+				},
+				["condition"] = "UnitBuff('pet', GetSpellInfo(20217)) or UnitBuff('pet', GetSpellInfo(25898)) or UnitBuff('pet', GetSpellInfo(20911)) or UnitBuff('pet', GetSpellInfo(25899))",
+			},
+			{ -- Fel Vitality
+				["tab"] = 2,
+				["num"] = 7,
+				["rank"] = {
+					0.05, 0.1, 0.15,
+				},
+				["condition"] = "UnitExists('pet')",
+			},
+		},
+		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet") - WARLOCK_PET_BONUS["PET_BONUS_STAM"] = 0.3; its actually 0.75
+		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
+		["ADD_SPELL_DMG_MOD_PET_STA"] = {
+			{
+				["tab"] = 2,
+				["num"] = 20,
+				["rank"] = {
+					0.04, 0.08, 0.12,
+				},
+				["condition"] = "UnitExists('pet')",
 			},
 		},
 		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet") - WARLOCK_PET_BONUS["PET_BONUS_INT"] = 0.3;
 		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
-		-- Warlock: Fel Synergy (Rank 2) - 2,22
-		--          Your Summoned Demons share an additional 5%/10% of your Armor, Intellect and Stamina, and you have a 50%/100% chance to heal your pet for 15% of the amount of damage done by you.
-		--   3.1.0: No longer increases intellect, stamina and damage of your summoned demon.
-		["ADD_SPELL_DMG_MOD_INT"] = {
+		["ADD_SPELL_DMG_MOD_PET_INT"] = {
 			{
 				["tab"] = 2,
 				["num"] = 20,
 				["rank"] = {
-					0.012, 0.024, 0.036,
+					0.04, 0.08, 0.12,
 				},
 				["condition"] = "UnitExists('pet')",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.002, 0.004, 0.006,
-				},
-				["condition"] = "(wowBuildNo < 9742) and UnitExists('pet') and (select(5, GetTalentInfo(2, 22)) == 1)",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.004, 0.008, 0.0012,
-				},
-				["condition"] = "(wowBuildNo < 9742) and UnitExists('pet') and (select(5, GetTalentInfo(2, 22)) == 2)",
-			},
-		},
-		-- Warlock: Demonic Knowledge (Rank 3) - 2,20 - UnitExists("pet") - WARLOCK_PET_BONUS["PET_BONUS_STAM"] = 0.3;
-		--          Increases your spell damage by an amount equal to 4/8/12% of the total of your active demon's Stamina plus Intellect.
-		-- Warlock: Fel Synergy (Rank 2) - 2,22
-		--          Your Summoned Demons share an additional 5%/10% of your Armor, Intellect and Stamina, and you have a 50%/100% chance to heal your pet for 15% of the amount of damage done by you.
-		--   3.1.0: No longer increases intellect, stamina and damage of your summoned demon.
-		["ADD_SPELL_DMG_MOD_STA"] = {
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.012, 0.024, 0.036,
-				},
-				["condition"] = "UnitExists('pet')",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.002, 0.004, 0.006,
-				},
-				["condition"] = "(wowBuildNo < 9742) and UnitExists('pet') and (select(5, GetTalentInfo(2, 22)) == 1)",
-			},
-			{
-				["tab"] = 2,
-				["num"] = 20,
-				["rank"] = {
-					0.004, 0.008, 0.0012,
-				},
-				["condition"] = "(wowBuildNo < 9742) and UnitExists('pet') and (select(5, GetTalentInfo(2, 22)) == 2)",
 			},
 		},
 		-- Warlock: Demonic Resilience (Rank 3) - 2,18
@@ -9436,7 +9414,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.15,
 				},
-				["buff"] = GetSpellInfo(25228),		-- ["Soul Link"],
+				["buff"] = 25228,		-- ["Soul Link"],
 			},
 		},
 		-- Warlock: Fel Vitality (Rank 3) - 2,7
@@ -9444,40 +9422,21 @@ local StatModTable = {
 		["MOD_HEALTH"] = {
 			{
 				["tab"] = 2,
-				["num"] = 6,
-				["rank"] = {
-					0.01, 0.02, 0.03,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
 				["num"] = 7,
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
-		-- Warlock: Fel Vitality (Rank 3) - 2,6
+		-- Warlock: Fel Vitality (Rank 3) - 2,7
 		--          Increases the Stamina and Intellect of your Imp, Voidwalker, Succubus, Felhunter and Felguard by 15% and increases your maximum health and mana by 1%/2%/3%.
-		--   3.1.0: 2,7
 		["MOD_MANA"] = {
 			{
 				["tab"] = 2,
-				["num"] = 6,
-				["rank"] = {
-					0.01, 0.02, 0.03,
-				},
-				["condition"] = "wowBuildNo < 9742",
-			},
-			{
-				["tab"] = 2,
 				["num"] = 7,
 				["rank"] = {
 					0.01, 0.02, 0.03,
 				},
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Warlock: Demonic Embrace (Rank 5) - 2,3
@@ -9491,8 +9450,9 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["WARRIOR"] = {
+	}
+elseif playerClass == "WARRIOR" then
+	StatModTable["WARRIOR"] = {
 		-- Warrior: Improved Spell Reflection (Rank 2) - 3,10
 		--          Reduces the chance you'll be hit by spells by 2%/4%
 		["ADD_HIT_TAKEN"] = {
@@ -9511,7 +9471,7 @@ local StatModTable = {
 			},
 		},
 		-- Warrior: Armored to the Teeth (Rank 3) - 2,1
-		--          Increases your attack power by 1/2/3 for every 180 armor value you have.
+		--          Increases your attack power by 1/2/3 for every 108 armor value you have.
 		["ADD_AP_MOD_ARMOR"] = {
 			{
 				["tab"] = 2,
@@ -9519,6 +9479,15 @@ local StatModTable = {
 				["rank"] = {
 					1/180, 2/180, 3/180,
 				},
+				["old"] = 10147,
+			},
+			{
+				["tab"] = 2,
+				["num"] = 1,
+				["rank"] = {
+					1/108, 2/108, 3/108,
+				},
+				["new"] = 10147,
 			},
 		},
 		-- Warrior: Anticipation (Rank 5) - 3,5
@@ -9532,20 +9501,6 @@ local StatModTable = {
 				},
 			},
 		},
-		-- Warrior: Improved Berserker Stance (Rank 5) - 2,22 - Stance
-		--          Increases attack power by 2%/4%/6%/8%/10% while in Berserker Stance.
-		--   3.1.0: Increases strength by 4/8/12/16/20% while in Berserker Stance.
-		["MOD_AP"] = {
-			{
-				["tab"] = 2,
-				["num"] = 22,
-				["rank"] = {
-					0.02, 0.04, 0.06, 0.08, 0.1,
-				},
-				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-				["condition"] = "wowBuildNo < 9742",
-			},
-		},
 		-- Warrior: Shield Wall - Buff
 		--          All damage taken reduced by 60%.
 		-- Warrior: Glyph of Shield Wall - Major Glyph
@@ -9553,8 +9508,7 @@ local StatModTable = {
 		-- Warrior: Defensive Stance - stance
 		--          A defensive combat stance. Decreases damage taken by 10% and damage caused by 10%. Increases threat generated.
 		-- Warrior: Berserker Stance - stance
-		--          An aggressive stance. Critical hit chance is increased by 3% and all damage taken is increased by 10%.
-		--   3.1.0: Now increases damage taken by 5%. 
+		--          An aggressive stance. Critical hit chance is increased by 3% and all damage taken is increased by 5%.
 		-- Warrior: Death Wish - Buff
 		--          When activated, increases your physical damage by 20% and makes you immune to Fear effects, but increases all damage taken by 5%. Lasts 30 sec.
 		-- Warrior: Recklessness - Buff
@@ -9574,7 +9528,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.6,
 				},
-				["buff"] = GetSpellInfo(41196),		-- ["Shield Wall"],
+				["buff"] = 41196,		-- ["Shield Wall"],
 			},
 			{
 				["MELEE"] = true,
@@ -9588,9 +9542,8 @@ local StatModTable = {
 				["rank"] = {
 					0.2,
 				},
-				["buff"] = GetSpellInfo(41196),		-- ["Shield Wall"],
+				["buff"] = 41196,		-- ["Shield Wall"],
 				["glyph"] = 63329, -- Glyph of Shield Wall,
-				["condition"] = "wowBuildNo >= 9742",
 			},
 			{
 				["MELEE"] = true,
@@ -9616,10 +9569,9 @@ local StatModTable = {
 				["SHADOW"] = true,
 				["ARCANE"] = true,
 				["rank"] = {
-					0.1,
+					0.05,
 				},
 				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-				["condition"] = "wowBuildNo < 9742",
 			},
 			{
 				["MELEE"] = true,
@@ -9633,22 +9585,7 @@ local StatModTable = {
 				["rank"] = {
 					0.05,
 				},
-				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-				["condition"] = "wowBuildNo >= 9742",
-			},
-			{
-				["MELEE"] = true,
-				["RANGED"] = true,
-				["HOLY"] = true,
-				["FIRE"] = true,
-				["NATURE"] = true,
-				["FROST"] = true,
-				["SHADOW"] = true,
-				["ARCANE"] = true,
-				["rank"] = {
-					0.05,
-				},
-				["buff"] = GetSpellInfo(12292),		-- ["Death Wish"],
+				["buff"] = 12292,		-- ["Death Wish"],
 			},
 			{
 				["MELEE"] = true,
@@ -9662,7 +9599,7 @@ local StatModTable = {
 				["rank"] = {
 					0.2,
 				},
-				["buff"] = GetSpellInfo(13847),		-- ["Recklessness"],
+				["buff"] = 13847,		-- ["Recklessness"],
 			},
 			{ -- Improved Defensive Stance
 				["HOLY"] = true,
@@ -9685,7 +9622,7 @@ local StatModTable = {
 				["rank"] = {
 					0.3,
 				},
-				["buff"] = GetSpellInfo(12975),		-- ["Last Stand"],
+				["buff"] = 12975,		-- ["Last Stand"],
 			},
 		},
 		-- Warrior: Toughness (Rank 5) - 3,9
@@ -9700,7 +9637,7 @@ local StatModTable = {
 			},
 		},
 		-- Warrior: Vitality (Rank 3) - 3,20
-		--          Increases your total Strength and Stamina by 2%/4%/6% and your Expertise by 2/4/6.
+		--          Increases your total Strength and Stamina by 3/6/9% and your Expertise by 2/4/6.
 		-- Warrior: Strength of Arms (Rank 2) - 1,22
 		--          Increases your total Strength and Stamina by 2%/4% and your Expertise by 2/4.
 		["MOD_STA"] = {
@@ -9710,6 +9647,15 @@ local StatModTable = {
 				["rank"] = {
 					0.02, 0.04, 0.06,
 				},
+				["old"] = 11685,
+			},
+			{
+				["tab"] = 3,
+				["num"] = 20,
+				["rank"] = {
+					0.03, 0.06, 0.09,
+				},
+				["new"] = 11685,
 			},
 			{
 				["tab"] = 1,
@@ -9724,7 +9670,7 @@ local StatModTable = {
 		-- Warrior: Strength of Arms (Rank 2) - 1,22
 		--          Increases your total Strength and total health by 2%/4%.
 		-- Warrior: Improved Berserker Stance (Rank 5) - 2,22 - Stance
-		--          Increases attack power by 2%/4%/6%/8%/10% while in Berserker Stance.
+		--          Increases strength by 4/8/12/16/20% while in Berserker Stance.
 		--   3.1.0: Increases strength by 4/8/12/16/20% while in Berserker Stance.
 		["MOD_STR"] = {
 			{
@@ -9748,7 +9694,6 @@ local StatModTable = {
 					0.04, 0.08, 0.12, 0.16, 0.2,
 				},
 				["stance"] = "Interface\\Icons\\Ability_Racial_Avatar",
-				["condition"] = "wowBuildNo >= 9742",
 			},
 		},
 		-- Warrior: Shield Mastery (Rank 2) - 3,8
@@ -9762,22 +9707,35 @@ local StatModTable = {
 				},
 			},
 		},
-	},
-	["ALL"] = {
+	}
+end
+	StatModTable["ALL"] = {
+		-- ICC: Chill of the Throne
+		--      Chance to dodge reduced by 20%.
+		["ADD_DODGE"] = {
+			{
+				["rank"] = {
+					-20, 
+				},
+				["buff"] = 69127,		-- ["Chill of the Throne"],
+			},
+		},
 		-- Replenishment - Buff
-		-- Replenishes 0.25% of maximum mana every sec. 0.0025*5=0.0125 mp5
+		--   Replenishes 1% of maximum mana per 5 sec.
 		-- Priest: Vampiric Touch
-		--         Priest's party or raid members gain 0.25% of their maximum mana per second when the priest deals damage from Mind Blast.
+		--         Priest's party or raid members gain 1% of their maximum mana per 5 sec when the priest deals damage from Mind Blast.
 		-- Paladin: Judgements of the Wise
-		--          Your Judgement spells have a 100% chance to grant the Replenishment effect to up to 10 party or raid members mana regeneration equal to 0.25% of their maximum mana per second, and to immediately grant you 15% of your base mana.
+		--          Your damaging Judgement spells have a 100% chance to grant the Replenishment effect to 
+    --          up to 10 party or raid members mana regeneration equal to 1% of their maximum mana per 5 sec for 15 sec
 		-- Hunter: Hunting Party
-		--         Your Arcane Shot, Explosive Shot and Steady Shot critical strikes have a 100% chance to grant up to 10 party or raid members mana regeneration equal to 0.25% of the maximum mana per second. Lasts for 15 sec.
+		--         Your Arcane Shot, Explosive Shot and Steady Shot critical strikes have a 100% chance to 
+    --         grant up to 10 party or raid members mana regeneration equal to 1% of the maximum mana per 5 sec.
 		["ADD_MANA_REG_MOD_MANA"] = {
 			{
 				["rank"] = {
-					0.0125,
+					0.01,
 				},
-				["buff"] = GetSpellInfo(57669),		-- ["Replenishment"],
+				["buff"] = 57669,		-- ["Replenishment"],
 			},
 		},
 		-- Priest: Pain Suppression - Buff
@@ -9787,7 +9745,7 @@ local StatModTable = {
 		-- Warrior: Vigilance - Buff
 		--          Damage taken reduced by 3% and 10% of all threat transferred to warrior.
 		-- Paladin: Blessing of Sanctuary - Buff
-		--          Damage taken reduced by up to 3%, stamina increased by 10%.
+		--          Damage taken reduced by up to 3%, strength and stamina increased by 10%.
 		-- MetaGem: Effulgent Skyflare Diamond - 41377
 		--          +32 Stamina and Reduce Spell Damage Taken by 2%
 		-- Paladin: Lay on Hands (Rank 1/2) - Buff
@@ -9809,7 +9767,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.4,
 				},
-				["buff"] = GetSpellInfo(33206),		-- ["Pain Suppression"],
+				["buff"] = 33206,		-- ["Pain Suppression"],
 			},
 			{-- Grace
 				["MELEE"] = true,
@@ -9823,7 +9781,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.01,
 				},
-				["buff"] = GetSpellInfo(47930),		-- ["Grace"],
+				["buff"] = 47930,		-- ["Grace"],
 			},
 			{-- Vigilance
 				["MELEE"] = true,
@@ -9837,7 +9795,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03,
 				},
-				["buff"] = GetSpellInfo(50720),		-- ["Vigilance"],
+				["buff"] = 50720,		-- ["Vigilance"],
 			},
 			{-- Blessing of Sanctuary
 				["MELEE"] = true,
@@ -9851,7 +9809,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03,
 				},
-				["buff"] = GetSpellInfo(20911),		-- ["Blessing of Sanctuary"],
+				["buff"] = 20911,		-- ["Blessing of Sanctuary"],
 			},
 			{-- Greater Blessing of Sanctuary
 				["MELEE"] = true,
@@ -9865,7 +9823,7 @@ local StatModTable = {
 				["rank"] = {
 					-0.03,
 				},
-				["buff"] = GetSpellInfo(25899),		-- ["Greater Blessing of Sanctuary"],
+				["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
 			},
 			{-- Effulgent Skyflare Diamond
 				["HOLY"] = true,
@@ -9885,8 +9843,8 @@ local StatModTable = {
 				["rank"] = {
 					-0.1, -0.2,
 				},
-				["buff"] = GetSpellInfo(27154),		-- ["Lay on Hands"],
-				["condition"] = "wowBuildNo >= 10147",
+				["buff"] = 20236,		-- ["Lay on Hands"],
+				["new"] = 10147,
 			},
 			{
 				["MELEE"] = true,
@@ -9894,8 +9852,9 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.07, -0.1,
 				},
-				["buff"] = GetSpellInfo(15363),		-- ["Inspiration"],
-				["condition"] = "wowBuildNo >= 10147",
+				["buff"] = 15363,		-- ["Inspiration"],
+        ["group"] = D["Reduced Physical Damage Taken"],
+				["new"] = 10147,
 			},
 			{
 				["MELEE"] = true,
@@ -9903,8 +9862,9 @@ local StatModTable = {
 				["rank"] = {
 					-0.03, -0.07, -0.1,
 				},
-				["buff"] = GetSpellInfo(16237),		-- ["Ancestral Fortitude"],
-				["condition"] = "wowBuildNo >= 10147",
+				["buff"] = 16237,		-- ["Ancestral Fortitude"],
+        ["group"] = D["Reduced Physical Damage Taken"],
+				["new"] = 10147,
 			},
 		},
 		-- Priest: Power Infusion - Buff
@@ -9914,7 +9874,7 @@ local StatModTable = {
 				["rank"] = {
 					0.2,
 				},
-				["buff"] = GetSpellInfo(37274),		-- ["Power Infusion"],
+				["buff"] = 37274,		-- ["Power Infusion"],
 			},
 		},
 		-- Priest: Power Infusion - Buff
@@ -9924,7 +9884,7 @@ local StatModTable = {
 				["rank"] = {
 					0.2,
 				},
-				["buff"] = GetSpellInfo(37274),		-- ["Power Infusion"],
+				["buff"] = 37274,		-- ["Power Infusion"],
 			},
 		},
 		-- Night Elf : Quickness - Racial
@@ -9970,22 +9930,22 @@ local StatModTable = {
 				["rank"] = {
 					0.15, 0.30,
 				},
-				["buff"] = GetSpellInfo(27154),		-- ["Lay on Hands"],
-				["condition"] = "wowBuildNo < 10147",
+				["buff"] = 20236,		-- ["Lay on Hands"],
+				["old"] = 10147,
 			},
 			{
 				["rank"] = {
 					0.08, 0.16, 0.25,
 				},
-				["buff"] = GetSpellInfo(15363),		-- ["Inspiration"],
-				["condition"] = "wowBuildNo < 10147",
+				["buff"] = 15363,		-- ["Inspiration"],
+				["old"] = 10147,
 			},
 			{
 				["rank"] = {
 					0.08, 0.16, 0.25,
 				},
-				["buff"] = GetSpellInfo(16237),		-- ["Ancestral Fortitude"],
-				["condition"] = "wowBuildNo < 10147",
+				["buff"] = 16237,		-- ["Ancestral Fortitude"],
+				["old"] = 10147,
 			},
 			{
 				["rank"] = {
@@ -9994,14 +9954,33 @@ local StatModTable = {
 				["meta"] = 41380,
 			},
 		},
-		-- Death Knight: Abominable Might - Buff
-		--               Attack power increased by 10%.
+		-- Hunter: Trueshot Aura - Buff
+		--         Attack power increased by 10%.
+		-- Death Knight: Abomination's Might - Buff
+		--               Attack power increased by 5/10%.
+		-- Shaman: Unleashed Rage - Buff
+		--         Melee attack power increased by 4/7/10%.
 		["MOD_AP"] = {
 			{
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(55972),		-- ["Abominable Might"],
+				["buff"] = 19506,		-- ["Trueshot Aura"],
+        ["group"] = D["Attack Power Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.05, 0.1,
+				},
+				["buff"] = 55972,		-- ["Abominable Might"],
+        ["group"] = D["Attack Power Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.04, 0.07, 0.1,
+				},
+				["buff"] = 30809,		-- ["Unleashed Rage"],
+        ["group"] = D["Attack Power Multiplier"],
 			},
 		},
 		-- MetaGem: Beaming Earthsiege Diamond - 41389
@@ -10016,70 +9995,125 @@ local StatModTable = {
 		},
 		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
 		--          Increases stats by 10%.
+		-- Paladin: Blessing of Sanctuary, Greater Blessing of Sanctuary - Buff
+		--          Damage taken reduced by up to 3%, strength and stamina increased by 10%. Does not stack with Blessing of Kings.
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		["MOD_STR"] = {
 			{
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(20217),		-- ["Blessing of Kings"],
+				["buff"] = 20217,		-- ["Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(25898),		-- ["Greater Blessing of Kings"],
-			},
-		},
-		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-		--          Increases stats by 10%.
-		["MOD_AGI"] = {
-			{
-				["rank"] = {
-					0.1,
-				},
-				["buff"] = GetSpellInfo(20217),		-- ["Blessing of Kings"],
-			},
-			{
-				["rank"] = {
-					0.1,
-				},
-				["buff"] = GetSpellInfo(25898),		-- ["Greater Blessing of Kings"],
-			},
-		},
-		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
-		--          Increases stats by 10%.
-		-- Paladin: Blessing of Sanctuary, Greater Blessing of Sanctuary - Buff
-		--          Damage taken reduced by up to 3%, stamina increased by 10%. Does not stack with Blessing of Kings.
-		["MOD_STA"] = {
-			{
-				["rank"] = {
-					0.1,
-				},
-				["buff"] = GetSpellInfo(20217),		-- ["Blessing of Kings"],
-			},
-			{
-				["rank"] = {
-					0.1,
-				},
-				["buff"] = GetSpellInfo(25898),		-- ["Greater Blessing of Kings"],
+				["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{-- Blessing of Sanctuary
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(20911),		-- ["Blessing of Sanctuary"],
-				["condition"] = "wowBuildNo >= 10147 and not (UnitBuff('player', GetSpellInfo(20217)) or UnitBuff('player', GetSpellInfo(25898)))",
+				["buff"] = 20911,		-- ["Blessing of Sanctuary"],
+				["new"] = 10371,
+        ["group"] = D["Stat Multiplier"],
 			},
 			{-- Greater Blessing of Sanctuary
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(25899),		-- ["Greater Blessing of Sanctuary"],
-				["condition"] = "wowBuildNo >= 10147 and not (UnitBuff('player', GetSpellInfo(20217)) or UnitBuff('player', GetSpellInfo(25898)))",
+				["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
+				["new"] = 10371,
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.08,
+				},
+				["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 		},
 		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
 		--          Increases stats by 10%.
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
+		["MOD_AGI"] = {
+			{
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 20217,		-- ["Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.08,
+				},
+				["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+		},
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
+		-- Paladin: Blessing of Sanctuary, Greater Blessing of Sanctuary - Buff
+		--          Damage taken reduced by up to 3%, strength and stamina increased by 10%. Does not stack with Blessing of Kings.
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
+		["MOD_STA"] = {
+			{
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 20217,		-- ["Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{-- Blessing of Sanctuary
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 20911,		-- ["Blessing of Sanctuary"],
+				["new"] = 10147,
+				["condition"] = "not (UnitBuff('player', GetSpellInfo(20217)) or UnitBuff('player', GetSpellInfo(25898)))",
+			},
+			{-- Greater Blessing of Sanctuary
+				["rank"] = {
+					0.1,
+				},
+				["buff"] = 25899,		-- ["Greater Blessing of Sanctuary"],
+				["new"] = 10147,
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.08,
+				},
+				["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+		},
+		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
+		--          Increases stats by 10%.
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		-- Gnome: Expansive Mind - Racial
 		--        Increase Intelligence by 5%.
 		-- MetaGem: Ember Skyfire Diamond - 35503
@@ -10091,13 +10125,22 @@ local StatModTable = {
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(20217),		-- ["Blessing of Kings"],
+				["buff"] = 20217,		-- ["Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(25898),		-- ["Greater Blessing of Kings"],
+				["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.08,
+				},
+				["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{
 				["rank"] = {
@@ -10120,6 +10163,8 @@ local StatModTable = {
 		},
 		-- Paladin: Blessing of Kings, Greater Blessing of Kings - Buff
 		--          Increases stats by 10%.
+		-- Leatherworking: Blessing of Forgotten Kings - Buff
+		--                 Increases stats by 8%.
 		-- Human: The Human Spirit - Racial
 		--        Increase Spirit by 10%.
 		-- 3.0.2: Spirit increased by 3%.
@@ -10128,13 +10173,22 @@ local StatModTable = {
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(20217),		-- ["Blessing of Kings"],
+				["buff"] = 20217,		-- ["Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{
 				["rank"] = {
 					0.1,
 				},
-				["buff"] = GetSpellInfo(25898),		-- ["Greater Blessing of Kings"],
+				["buff"] = 25898,		-- ["Greater Blessing of Kings"],
+        ["group"] = D["Stat Multiplier"],
+			},
+			{
+				["rank"] = {
+					0.08,
+				},
+				["buff"] = 69378,		-- ["Blessing of Forgotten Kings"],
+        ["group"] = D["Stat Multiplier"],
 			},
 			{
 				["rank"] = {
@@ -10143,15 +10197,23 @@ local StatModTable = {
 				["race"] = "Human",
 			},
 		},
-	},
-}
-for k, v in pairs(StatModTable) do
-	if k ~= "ALL" and k ~= playerClass then
-		StatModTable[k] = nil
-	end
+	}
+
+-- Generate buff names
+for class, tables in pairs(StatModTable) do
+  for modName, mods in pairs(tables) do
+    for key, mod in pairs(mods) do
+      if mod.buff then
+        mod.buffName = GetSpellInfo(mod.buff)
+      end
+      if mod.buff2 then
+        mod.buff2Name = GetSpellInfo(mod.buff2)
+      end
+    end
+  end
 end
 
-function StatLogic:IsMetaGemActive(item)
+local function IsMetaGemActive(item)
 	-- Check item
 	if (type(item) == "string") or (type(item) == "number") then
 	elseif type(item) == "table" and type(item.GetItem) == "function" then
@@ -10171,15 +10233,16 @@ function StatLogic:IsMetaGemActive(item)
 		-- Metagem requirements satisfied, check if metagem is equipped
 		local headLink = GetInventoryItemLink("player", 1)
 		if not headLink then return end
-		local gemId = self:GetGemID(item)
+		local gemId = StatLogic:GetGemID(item)
 		if not gemId then return end
 		if strfind(headLink, ":"..gemId..":") then
 			return true
 		end
 	end
 end
+StatLogic.IsMetaGemActive = IsMetaGemActive
 
-function StatLogic:SlotHasEnchant(enchantId, slotId)
+local function SlotHasEnchant(enchantId, slotId)
 	-- Check args
 	if type(enchantId) ~= "number" then return end
 	if (type(slotId) ~= "number") and (type(slotId) ~= "nil") then return end
@@ -10204,6 +10267,7 @@ function StatLogic:SlotHasEnchant(enchantId, slotId)
 		end
 	end
 end
+StatLogic.SlotHasEnchant = SlotHasEnchant
 
 --[[---------------------------------
 	:GetStatMod(stat, school)
@@ -10308,34 +10372,39 @@ Returns:
 Example:
 	StatLogic:GetStatMod("MOD_INT")
 -----------------------------------]]
+local buffGroup = {}
 function StatLogic:GetStatMod(stat, school, talentGroup)
 	local statModInfo = StatModInfo[stat]
 	local mod = statModInfo.initialValue
 	-- if school is required for this statMod but not given
 	if statModInfo.school and not school then return mod end
+  wipe(buffGroup)
 	-- Class specific mods
 	if type(StatModTable[playerClass][stat]) == "table" then
 		for _, case in ipairs(StatModTable[playerClass][stat]) do
 			local ok = true
 			if school and not case[school] then ok = nil end
+			if ok and case.new and wowBuildNo < case.new then ok = nil end
+			if ok and case.old and wowBuildNo >= case.old then ok = nil end
 			if ok and case.condition and not loadstring("return "..case.condition)() then ok = nil end
-			if ok and case.buff and not GetPlayerBuffName(case.buff) then ok = nil end
-			if ok and case.buff2 and not GetPlayerBuffName(case.buff2) then ok = nil end
+			if ok and case.buffName and not PlayerHasAura(case.buffName) then ok = nil end
+			if ok and case.buff2Name and not PlayerHasAura(case.buff2Name) then ok = nil end
 			if ok and case.stance and case.stance ~= GetStanceIcon() then ok = nil end
 			if ok and case.glyph and not PlayerHasGlyph(case.glyph, talentGroup) then ok = nil end
-			if ok and case.enchant and not self:SlotHasEnchant(case.enchant, case.slot) then ok = nil end
+			if ok and case.enchant and not SlotHasEnchant(case.enchant, case.slot) then ok = nil end
+			if ok and case.itemset and ((not PlayerItemSets[case.itemset[1]]) or PlayerItemSets[case.itemset[1]] < case.itemset[2]) then ok = nil end
 			if ok then
 				local r, _
 				local s = 1
 				-- if talent field
 				if case.tab and case.num then
 					_, _, _, _, r = GetTalentInfo(case.tab, case.num, nil, nil, talentGroup)
-					if case.buff and case.buffStack then
-						_, s = GetPlayerBuffRankStack(case.buff) -- Gets buff stack count, but use talent as rank
+					if case.buffName and case.buffStack then
+						_, s = GetPlayerAuraRankStack(case.buffName) -- Gets buff stack count, but use talent as rank
 					end
 				-- no talent but buff is given
-				elseif case.buff then
-					r, s = GetPlayerBuffRankStack(case.buff)
+				elseif case.buffName then
+					r, s = GetPlayerAuraRankStack(case.buffName)
 					if not case.buffStack then
 						s = 1
 					end
@@ -10345,9 +10414,27 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
 				end
 				if r and r ~= 0 and case.rank[r] then
 					if statModInfo.initialValue == 0 then
-						mod = mod + case.rank[r] * s
+            if not case.group then
+              mod = mod + case.rank[r] * s
+            elseif not buffGroup[case.group] then -- this mod is part of a group, but not seen before
+              mod = mod + case.rank[r] * s
+              buffGroup[case.group] = case.rank[r] * s
+            elseif (case.rank[r] * s) > buffGroup[case.group] then -- seen before and this one is better, do upgrade
+              mod = mod + case.rank[r] * s - buffGroup[case.group]
+              buffGroup[case.group] = case.rank[r] * s
+            else -- seen before but not better, do nothing
+            end
 					else
-						mod = mod * (case.rank[r] * s + 1)
+            if not case.group then
+              mod = mod * (case.rank[r] * s + 1)
+            elseif not buffGroup[case.group] then -- this mod is part of a group, but not seen before
+              mod = mod * (case.rank[r] * s + 1)
+              buffGroup[case.group] = (case.rank[r] * s + 1)
+            elseif (case.rank[r] * s + 1) > buffGroup[case.group] then -- seen before and this one is better, do upgrade
+              mod = mod * (case.rank[r] * s + 1) / buffGroup[case.group]
+              buffGroup[case.group] = (case.rank[r] * s + 1)
+            else -- seen before but not better, do nothing
+            end
 					end
 				end
 			end
@@ -10358,23 +10445,25 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
 		for _, case in ipairs(StatModTable["ALL"][stat]) do
 			local ok = true
 			if school and not case[school] then ok = nil end
+			if ok and case.new and wowBuildNo < case.new then ok = nil end
+			if ok and case.old and wowBuildNo >= case.old then ok = nil end
 			if ok and case.condition and not loadstring("return "..case.condition)() then ok = nil end
-			if ok and case.buff and not GetPlayerBuffName(case.buff) then ok = nil end
+			if ok and case.buffName and not PlayerHasAura(case.buffName) then ok = nil end
 			if ok and case.stance and case.stance ~= GetStanceIcon() then ok = nil end
 			if ok and case.race and case.race ~= playerRace then ok = nil end
-			if ok and case.meta and not self:IsMetaGemActive(case.meta) then ok = nil end
+			if ok and case.meta and not IsMetaGemActive(case.meta) then ok = nil end
 			if ok then
 				local r, _
 				local s = 1
 				-- if talent field
 				if case.tab and case.num then
 					_, _, _, _, r = GetTalentInfo(case.tab, case.num, nil, nil, talentGroup)
-					if case.buff and case.buffStack then
-						_, s = GetPlayerBuffRankStack(case.buff) -- Gets buff rank and stack count
+					if case.buffName and case.buffStack then
+						_, s = GetPlayerAuraRankStack(case.buffName) -- Gets buff rank and stack count
 					end
 				-- no talent but buff is given
-				elseif case.buff then
-					r, s = GetPlayerBuffRankStack(case.buff)
+				elseif case.buffName then
+					r, s = GetPlayerAuraRankStack(case.buffName)
 					if not case.buffStack then
 						s = 1
 					end
@@ -10384,9 +10473,27 @@ function StatLogic:GetStatMod(stat, school, talentGroup)
 				end
 				if r and r ~= 0 and case.rank[r] then
 					if statModInfo.initialValue == 0 then
-						mod = mod + case.rank[r] * s
+            if not case.group then
+              mod = mod + case.rank[r] * s
+            elseif not buffGroup[case.group] then -- this mod is part of a group, but not seen before
+              mod = mod + case.rank[r] * s
+              buffGroup[case.group] = case.rank[r] * s
+            elseif (case.rank[r] * s) > buffGroup[case.group] then -- seen before and this one is better, do upgrade
+              mod = mod + case.rank[r] * s - buffGroup[case.group]
+              buffGroup[case.group] = case.rank[r] * s
+            else -- seen before but not better, do nothing
+            end
 					else
-						mod = mod * (case.rank[r] * s + 1)
+            if not case.group then
+              mod = mod * (case.rank[r] * s + 1)
+            elseif not buffGroup[case.group] then -- this mod is part of a group, but not seen before
+              mod = mod * (case.rank[r] * s + 1)
+              buffGroup[case.group] = (case.rank[r] * s + 1)
+            elseif (case.rank[r] * s + 1) > buffGroup[case.group] then -- seen before and this one is better, do upgrade
+              mod = mod * (case.rank[r] * s + 1) / buffGroup[case.group]
+              buffGroup[case.group] = (case.rank[r] * s + 1)
+            else -- seen before but not better, do nothing
+            end
 					end
 				end
 			end
@@ -10945,6 +11052,13 @@ if wowBuildNo >= 10147 then
 	RatingBase[CR_CRIT_TAKEN_RANGED] = 28.75
 	RatingBase[CR_CRIT_TAKEN_SPELL] = 28.75
 end
+--[[
+3.2.2.10371
+- Armor Penetration Rating: All classes now receive 10% more benefit from Armor Penetration Rating. down from 25%
+--]]
+if wowBuildNo >= 10371 then
+	RatingBase[CR_ARMOR_PENETRATION] = 4.69512176513672 / 1.1
+end
 
 -- Formula reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
 -- Percentage = Rating / RatingBase / H
@@ -11194,7 +11308,7 @@ function StatLogic:GetAPPerAgi(class)
 		class = ClassNameToID[playerClass]
 	end
 	-- Check druid cat form
-	if (class == 10) and GetPlayerBuffName((GetSpellInfo(32356))) then		-- ["Cat Form"]
+	if (class == 10) and PlayerHasAura((GetSpellInfo(32356))) then		-- ["Cat Form"]
 		return 1
 	end
 	return APPerAgi[class], "AP"
@@ -11412,25 +11526,33 @@ Example:
 	local dodge, statid = StatLogic:GetDodgePerAgi()
 -----------------------------------]]
 
--- local DodgePerAgi80 = {
-	-- nil, nil, nil, nil, nil, nil, nil, nil, 0.0167, nil,
-	--["WARRIOR"] =     3.4636,
-	--["PALADIN"] =     3.2685,
-	--["HUNTER"] =     -5.4500,
-	--["ROGUE"] =      -0.5900,
-	--["PRIEST"] =      3.1830,
-	--["DEATHKNIGHT"] = 3.4636,
-	--["SHAMAN"] =      1.6750,
-	--["MAGE"] =        3.4575,
-	--["WARLOCK"] =     2.0350,
-	--["DRUID"] =       4.951,
--- }
+local DodgePerAgiStatic = {
+	0.0118, 0.0167, 0.0116, 0.0209, 0.0167, 0.0118, 0.0167, 0.017, 0.0167, 0.0209, 
+	--["WARRIOR"] =     0.0118,
+	--["PALADIN"] =     0.0167,
+	--["HUNTER"] =      0.0116,
+	--["ROGUE"] =       0.0209,
+	--["PRIEST"] =      0.0167,
+	--["DEATHKNIGHT"] = 0.0118,
+	--["SHAMAN"] =      0.0167,
+	--["MAGE"] =        0.017, 
+	--["WARLOCK"] =     0.0167,
+	--["DRUID"] =       0.0209,
+}
+
+local ModAgiClasses = {
+	["DRUID"] = true,
+	["HUNTER"] = true,
+	["ROGUE"] = true,
+}
+local BoK = GetSpellInfo(20217)
+local GBoK = GetSpellInfo(25898)
 function StatLogic:GetDodgePerAgi()
 	local level = UnitLevel("player")
 	local class = ClassNameToID[playerClass]
-	-- if level == 80 and DodgePerAgi80[class] then
-		-- return DodgePerAgi80[class]
-	-- end
+	if level == 80 and DodgePerAgiStatic[class] then
+		return DodgePerAgiStatic[class], "DODGE"
+	end
 	-- Collect data
 	local D_dr = GetDodgeChance()
 	local dodgeFromDodgeRating = self:GetEffectFromRating(GetCombatRating(CR_DODGE), CR_DODGE, level)
@@ -11439,8 +11561,17 @@ function StatLogic:GetDodgePerAgi()
 	local D_r = dodgeFromDodgeRating + dodgeFromModDefense
 	local D_b = BaseDodge[class] + self:GetStatMod("ADD_DODGE") + (baseDefense - level * 5) * 0.04
 	local stat, effectiveStat, posBuff, negBuff = UnitStat("player", 2) -- 2 = Agility
+	-- Talents that modify AGI will not add to posBuff, so we need to calculate baseAgi
+	-- But Kings added AGi will add to posBuff, so we need to check for Kings
+	local modAgi = 1
+	if ModAgiClasses[playerClass] then
+		modAgi = self:GetStatMod("MOD_AGI")
+		if PlayerHasAura(BoK) or PlayerHasAura(GBoK) then
+			modAgi = modAgi - 0.1
+		end
+	end
 	local A = effectiveStat
-	local A_b = stat - posBuff - negBuff
+	local A_b = ceil((stat - posBuff - negBuff) / modAgi)
 	local A_g = A - A_b
 	local C = C_d[class]
 	local k = K[class]
@@ -11798,89 +11929,6 @@ Example:
 
 -- Numbers reverse engineered by Whitetooth (hotdogee [at] gmail [dot] com)
 local BaseManaRegenPerSpi = {
-	[1] = 0.034965,
-	[2] = 0.034191,
-	[3] = 0.033465,
-	[4] = 0.032526,
-	[5] = 0.031661,
-	[6] = 0.031076,
-	[7] = 0.030523,
-	[8] = 0.029994,
-	[9] = 0.029307,
-	[10] = 0.028661,
-	[11] = 0.027584,
-	[12] = 0.026215,
-	[13] = 0.025381,
-	[14] = 0.0243,
-	[15] = 0.023345,
-	[16] = 0.022748,
-	[17] = 0.021958,
-	[18] = 0.021386,
-	[19] = 0.02079,
-	[20] = 0.020121,
-	[21] = 0.019733,
-	[22] = 0.019155,
-	[23] = 0.018819,
-	[24] = 0.018316,
-	[25] = 0.017936,
-	[26] = 0.017576,
-	[27] = 0.017201,
-	[28] = 0.016919,
-	[29] = 0.016581,
-	[30] = 0.016233,
-	[31] = 0.015994,
-	[32] = 0.015707,
-	[33] = 0.015464,
-	[34] = 0.015204,
-	[35] = 0.014956,
-	[36] = 0.014744,
-	[37] = 0.014495,
-	[38] = 0.014302,
-	[39] = 0.014094,
-	[40] = 0.013895,
-	[41] = 0.013724,
-	[42] = 0.013522,
-	[43] = 0.013363,
-	[44] = 0.013175,
-	[45] = 0.012996,
-	[46] = 0.012853,
-	[47] = 0.012687,
-	[48] = 0.012539,
-	[49] = 0.012384,
-	[50] = 0.012233,
-	[51] = 0.012113,
-	[52] = 0.011973,
-	[53] = 0.011859,
-	[54] = 0.011714,
-	[55] = 0.011575,
-	[56] = 0.011473,
-	[57] = 0.011342,
-	[58] = 0.011245,
-	[59] = 0.01111,
-	[60] = 0.010999,
-	[61] = 0.0107,
-	[62] = 0.010522,
-	[63] = 0.01029,
-	[64] = 0.010119,
-	[65] = 0.009968,
-	[66] = 0.009808,
-	[67] = 0.009651,
-	[68] = 0.009553,
-	[69] = 0.009445,
-	[70] = 0.009327,
-	[71] = 0.008859,
-	[72] = 0.008415,
-	[73] = 0.007993,
-	[74] = 0.007592,
-	[75] = 0.007211,
-	[76] = 0.006849,
-	[77] = 0.006506,
-	[78] = 0.006179,
-	[79] = 0.005869,
-	[80] = 0.005575,
-}
-if wowBuildNo >= 9742 then
-BaseManaRegenPerSpi = {
 	[1] =  0.020979,
 	[2] =  0.020515,
 	[3] =  0.020079,
@@ -11962,7 +12010,6 @@ BaseManaRegenPerSpi = {
 	[79] = 0.003522,
 	[80] = 0.003345,
 }
-end
 
 function StatLogic:GetNormalManaRegenFromSpi(spi, int, level)
 	-- argCheck for invalid input
@@ -12086,6 +12133,84 @@ function StatLogic:RemoveGem(link)
 		return strjoin(":", linkType, itemId, enchantId, 0, 0, 0, 0, suffixId, uniqueId, level)
 	else
 		return strjoin(":", linkType, itemId, enchantId, 0, 0, 0, 0, suffixId, uniqueId)
+	end
+end
+
+--[[---------------------------------
+	:RemoveExtraSocketGem(link)
+-------------------------------------
+Notes:
+	* Remove gems socketed in Prismatic Sockets, this includes Eternal Belt Buckles and Blacksmith only Bracer Socket and Glove Socket.
+Arguments:
+	string - "itemlink"
+Returns:
+	; link : number - The modified link
+Example:
+	local link = StatLogic:RemoveExtraSocketGem("Hitem:31052:425:525:525:525:525:0:0")
+-----------------------------------]]
+local itemStatsTable = {}
+local GetExtraSocketGemLoc = setmetatable({}, { __index = function(self, n)
+	-- We are here because what we want is not in cache
+	-- Get last gem location
+	local lastGemLoc = 0
+	local _, _, _, jewelId1, jewelId2, jewelId3, jewelId4 = strsplit(":", n)
+	if jewelId4 ~= "0" then
+		lastGemLoc = 4
+	elseif jewelId3 ~= "0" then
+		lastGemLoc = 3
+	elseif jewelId2 ~= "0" then
+		lastGemLoc = 2
+	elseif jewelId1 ~= "0" then
+		lastGemLoc = 1
+	end
+	if lastGemLoc == 0 then
+		self[n] = 0
+		return 0
+	end
+	-- Get number of sockets
+	wipe(itemStatsTable)
+	GetItemStats(n, itemStatsTable)
+	--RatingBuster:Print(itemStatsTable)
+	local numSockets = (itemStatsTable["EMPTY_SOCKET_RED"] or 0) + (itemStatsTable["EMPTY_SOCKET_YELLOW"] or 0) + (itemStatsTable["EMPTY_SOCKET_BLUE"] or 0)
+	if numSockets < lastGemLoc then
+		self[n] = lastGemLoc
+		return lastGemLoc
+	else
+		self[n] = 0
+		return 0
+	end
+end })
+
+local extraSocketLoc = {
+	["INVTYPE_WAIST"] = true,
+	["INVTYPE_WRIST"] = true,
+	["INVTYPE_HAND"] = true,
+}
+function StatLogic:RemoveExtraSocketGem(link)
+	-- check link
+	if not strfind(link, "item:%d+:%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+") then
+		return link
+	end
+	-- check only belt, bracer and gloves
+	local _, _, _, _, _, _, _, _, itemType = GetItemInfo(link)
+	if not extraSocketLoc[itemType] then return link end
+	-- Get current gem count
+	local extraGemLoc = GetExtraSocketGemLoc[link]
+	if extraGemLoc == 0 then return link end
+	local linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, level = strsplit(":", link)
+	if extraGemLoc == 1 then
+		jewelId1 = "0"
+	elseif extraGemLoc == 2 then
+		jewelId2 = "0"
+	elseif extraGemLoc == 3 then
+		jewelId3 = "0"
+	elseif extraGemLoc == 4 then
+		jewelId4 = "0"
+	end
+	if level then
+		return strjoin(":", linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId, level)
+	else
+		return strjoin(":", linkType, itemId, enchantId, jewelId1, jewelId2, jewelId3, jewelId4, suffixId, uniqueId)
 	end
 end
 
@@ -12258,60 +12383,72 @@ Notes:
 Arguments:
 	number or string or table - Gem, tooltip or itemId or "itemString" or "itemName" or "itemLink"
 Returns:
-	; gemID : number - The gemID of this gem
+	; gemID or false : number or bool - The gemID of this gem, false if invalid input
 	; gemText : string - The text shown in the tooltip when socketed in an item
 Example:
 	local gemID, gemText = StatLogic:GetGemID(28363)
 -----------------------------------]]
 -- SetTip("item:3185:0:2946")
 function StatLogic:GetGemID(item)
+	local t = GetTime()
 	-- Check item
 	if (type(item) == "string") or (type(item) == "number") then
 	elseif type(item) == "table" and type(item.GetItem) == "function" then
 		-- Get the link
 		_, item = item:GetItem()
-		if type(item) ~= "string" then return end
+		if type(item) ~= "string" then return false end
 	else
-		return
-	end
-	local itemID = item
-	if type(item) == "string" then
-		local temp = item:match("item:(%d+)")
-		if temp then
-			itemID = temp
-		end
-		itemID = tonumber(itemID)
+		return false
 	end
 	-- Check if item is in local cache
-	local name, link, _, _, reqLv, _, _, _, itemType = GetItemInfo(item)
+	local name, link = GetItemInfo(item)
 	if not name then
-		if tonumber(itemID) then
+		if tonumber(item) then
 			-- Query server for item
-			tipMiner:SetHyperlink("item:"..itemID);
+			tipMiner:ClearLines()
+			tipMiner:SetHyperlink("item:"..item)
+		else
+			item = item:match("item:(%d+)")
+			if item then
+				-- Query server for item
+				tipMiner:ClearLines()
+				tipMiner:SetHyperlink("item:"..item)
+			else
+				return false
+			end
 		end
 		return
 	end
-	itemID = link:match("item:(%d+)")
+	local itemID = strmatch(link, "item:(%d+)")
+	local len = strlen(itemID)-1
 	if not GetItemInfo(6948) then -- Hearthstone
 		-- Query server for Hearthstone
 		tipMiner:ClearLines()
 		tipMiner:SetHyperlink("item:6948")
 		return
 	end
-	local gemScanLink = "item:6948:0:%d:0:0:0:0:0"
+	local gemScanLink = "item:6948:0:0:0:%d:%d"
 	local gemID
 	-- Start GemID scan
 	for gemID = 4000, 1, -1 do
-		local itemLink = gemScanLink:format(gemID)
-		local _, gem1Link = GetItemGem(itemLink, 1)
-		if gem1Link and itemID == gem1Link:match("item:(%d+)") then
+		local itemLink = gemScanLink:format(gemID, gemID)
+		local _, gem1Link = GetItemGem(itemLink, 3)
+		--if gem1Link and itemID == gem1Link:match("item:(%d+)") then
+		if gem1Link and strsub(gem1Link, 18, 18+len) == itemID then
 			tipMiner:ClearLines() -- this is required or SetX won't work the second time its called
 			tipMiner:SetHyperlink(itemLink)
-			return gemID, StatLogicMinerTooltipTextLeft4:GetText()
+			if GetCVarBool("colorblindMode") then
+				return gemID, StatLogicMinerTooltipTextLeft6:GetText(), GetTime()-t
+			else
+				return gemID, StatLogicMinerTooltipTextLeft5:GetText(), GetTime()-t
+			end
 		end
 	end
 end
 
+-- will sometimes disconnect
+-- StatLogic:GetEnchantID("+10 All Stats")
+--[[
 function StatLogic:GetEnchantID(spell)
 	-- Check item
 	if not ((type(spell) == "string") or (type(spell) == "number")) then
@@ -12327,19 +12464,27 @@ function StatLogic:GetEnchantID(spell)
 		tipMiner:SetHyperlink("item:6948")
 		return
 	end
-	local scanLink = "item:6948:%d:0:0:0:0:0:0"
+	local scanLink = "item:6948:%d:%d:%d:%d:%d"
 	local id
 	-- Start EnchantID scan
-	for id = 6000, 1, -1 do
-		local itemLink = scanLink:format(id)
+	for id = 4000, 5, -5 do
+		local itemLink = scanLink:format(id, id-1, id-2, id-3, id-4)
 		tipMiner:ClearLines() -- this is required or SetX won't work the second time its called
 		tipMiner:SetHyperlink(itemLink)
 		if StatLogicMinerTooltipTextLeft4:GetText() == spellName then
 			return id, StatLogicMinerTooltipTextLeft4:GetText()
+		elseif StatLogicMinerTooltipTextLeft5:GetText() and strfind(StatLogicMinerTooltipTextLeft5:GetText(), spellName) then
+			return id, StatLogicMinerTooltipTextLeft5:GetText()
+		elseif StatLogicMinerTooltipTextLeft6:GetText() and strfind(StatLogicMinerTooltipTextLeft6:GetText(), spellName) then
+			return id, StatLogicMinerTooltipTextLeft6:GetText()
+		elseif StatLogicMinerTooltipTextLeft7:GetText() and strfind(StatLogicMinerTooltipTextLeft7:GetText(), spellName) then
+			return id, StatLogicMinerTooltipTextLeft7:GetText()
+		elseif StatLogicMinerTooltipTextLeft8:GetText() == spellName then
+			return id, StatLogicMinerTooltipTextLeft8:GetText()
 		end
 	end
 end
-
+--]]
 
 -- ================== --
 -- Stat Summarization --
@@ -12927,7 +13072,7 @@ function StatLogic:GetFinalArmor(item, text)
 end
 
 --[[---------------------------------
-	:GetDiffID(item, [ignoreEnchant], [ignoreGem], [red], [yellow], [blue], [meta])
+	:GetDiffID(item, [ignoreEnchant], [ignoreGem], [red], [yellow], [blue], [meta], [ignorePris])
 -------------------------------------
 Notes:
 	* Returns a unique identification string of the diff calculation, the identification string is made up of links concatenated together, can be used for cache indexing
@@ -12947,6 +13092,7 @@ Arguments:
 	number or string - gemID to replace a yellow socket
 	number or string - gemID to replace a blue socket
 	number or string - gemID to replace a meta socket
+	boolean - Ignore prismatic sockets when calculating the id if true
 Returns:
 	; id : string - a unique identification string of the diff calculation, for use as cache key
 	; link : string - link of main item
@@ -12999,7 +13145,7 @@ function HasTitanGrip(talentGroup)
 	end
 end
 
-function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta)
+function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta, ignorePris)
 	local _, name, itemType, link, linkDiff1, linkDiff2
 	-- Check item
 	if (type(item) == "string") or (type(item) == "number") then
@@ -13061,6 +13207,13 @@ function StatLogic:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, 
 			linkDiff2 = self:RemoveEnchant(linkDiff2)
 		end
 	end
+	if ignorePris then
+		link = self:RemoveExtraSocketGem(link)
+		linkDiff1 = self:RemoveExtraSocketGem(linkDiff1)
+		if linkDiff2 then
+			linkDiff2 = self:RemoveExtraSocketGem(linkDiff2)
+		end
+	end
 
 	-- Ignore Gems
 	if ignoreGem then
@@ -13088,7 +13241,7 @@ end
 
 
 --[[---------------------------------
-	:GetDiff(item, [diff1], [diff2], [ignoreEnchant], [ignoreGem], [red], [yellow], [blue], [meta])
+	:GetDiff(item, [diff1], [diff2], [ignoreEnchant], [ignoreGem], [red], [yellow], [blue], [meta], [ignorePris])
 -------------------------------------
 Notes:
 	* Calculates the stat diffrence from the specified item and your currently equipped items.
@@ -13110,6 +13263,7 @@ Arguments:
 	number or string - gemID to replace a yellow socket
 	number or string - gemID to replace a blue socket
 	number or string - gemID to replace a meta socket
+	boolean - Ignore prismatic sockets when calculating the id if true
 Returns:
 	; diff1 : table - The table with stat diff values for item 1
 	:{
@@ -13127,12 +13281,12 @@ Example:
 -----------------------------------]]
 
 -- TODO 2.1.0: Use SetHyperlinkCompareItem in StatLogic:GetDiff
-function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGem, red, yellow, blue, meta)
+function StatLogic:GetDiff(item, diff1, diff2, ignoreEnchant, ignoreGem, red, yellow, blue, meta, ignorePris)
 	-- Locale check
 	if noPatternLocale then return end
 
 	-- Get DiffID
-	local id, link, linkDiff1, linkDiff2 = self:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta)
+	local id, link, linkDiff1, linkDiff2 = self:GetDiffID(item, ignoreEnchant, ignoreGem, red, yellow, blue, meta, ignorePris)
 	if not id then return end
 
 	-- Clear Tables

@@ -22,13 +22,13 @@ local white = "|cffffffff"
 -----------------
 -- Multiplyers -- 
 -----------------
--- Priest_T9_13_00_58_245      Int=0.366855  Spi=0.554587  SP=1.613748  Hit=2.545532  Crit=1.222958  Haste=1.042097
+-- 3.3 Normalized values from http://www.shadowpriest.com/viewtopic.php?t=24134 
 local SPELL_POWER = 1.00
-local SPELL_HIT = 1.58
+local SPELL_HIT = 1.88
 local SPELL_CRIT = 0.76
-local SPELL_HASTE = 0.65
-local BONUS_INT = 0.23
-local BONUS_SPI = 0.34
+local SPELL_HASTE = 0.98
+local BONUS_INT = 0.22
+local BONUS_SPI = 0.59
 
 
 ----------
