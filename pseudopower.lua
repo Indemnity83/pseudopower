@@ -1,50 +1,68 @@
 -- $Id$
-local REV = "$Rev$"
 
+local VERSION = "2.0.0-beta"
+local SIM_VER = "403-2"
+local SIM_PROFILE = "Priest_Shadow_T11_372"
 
 ---------------
 -- Libraries --
 ---------------
-local StatLogic = LibStub("LibStatLogic-1.1")
+local StatLogic = LibStub("LibStatLogic-1.2")
 local TipHooker = LibStub("LibTipHooker-1.1")
-
+local Who = LibStub('LibWho-2.0')
 
 ---------------------
 -- Local variables --
 ---------------------
 local DEBUG = true
-local quality_threshold = 2
+local quality_threshold = 1
 local green = "|cff20ff20"
 local red = "|cffff2020"
+local yellow = "|cFFFFFF00"
 local white = "|cffffffff"
 
+--------------------
+-- Config Options --
+--------------------
+local PP = {
+	["env"] 			= "raid",
+	["spellpower"]		= 0.7935,
+	["hit"]				= 0.3741,
+	["crit"]			= 0.4040,
+	["haste"]			= 0.5031,
+	["mastery"]			= 0.3857,
+	["int"]				= 1.000,
+	["spirit"]			= 0.3732,
+}
 
 -----------------
 -- Multiplyers -- 
 -----------------
--- 3.3 Normalized values from http://www.shadowpriest.com/viewtopic.php?t=24134 
-local SPELL_POWER = 1.00
-local SPELL_HIT = 1.88
-local SPELL_CRIT = 0.76
-local SPELL_HASTE = 0.98
-local BONUS_INT = 0.22
-local BONUS_SPI = 0.59
+-- TODO: make this SavedVariables
+local SPELL_POWER = 	PP["spellpower"]
+local SPELL_HIT = 		PP["hit"]
+local SPELL_CRIT = 		PP["crit"]
+local SPELL_HASTE = 	PP["haste"]
+local SPELL_MASTERY = 	PP["mastery"]
+local BONUS_INT = 		PP["int"]
+local BONUS_SPI = 		PP["spirit"]
+local HIT_ENV = 		PP["env"]
 
 
 ----------
 -- Gems --
 ----------
-local rGemId = 40113 -- Runed Cardinal Ruby (+23 SP)
-local bGemId = 40133 -- Purified Dreadstone (+12 SP & +10 Spi)
-local yGemId = 40152 -- Potent Ametrine (+12 SP & +10 Crit)
-local mGemId = 41285 -- Chaotic Skyflare Diamond (+21 Crit & 3% Crit Dmg)
+local rGemId = 52207 -- Brilliant Inferno Ruby (+40 Int)
+local bGemId = 52236 -- Purified Demonseye (+20 Int & +20 Spi)
+local yGemId = 52208 -- Reckless Ember Topaz (+20 Int & +20 Haste)
+local mGemId = 68780 -- Burning Shadowspirit Diamond (+54 Int & 3% Crit Dmg)
 
 local rGem = StatLogic:GetGemID(rGemId)
 local bGem = StatLogic:GetGemID(bGemId)
 local yGem = StatLogic:GetGemID(yGemId)
 local mGem = StatLogic:GetGemID(mGemId)
-	
-	
+
+
 -----------------
 -- Debug Tools --
 -----------------
@@ -60,13 +78,53 @@ end
 ---------------------
 SLASH_PP1, SLASH_PP2 = '/pp', '/pseudopower'
 function SlashCmdList.PP(msg, editbox)
-	-- Debug info, print the file revision
-	debugPrint(REV)
-
-	-- Spit out the total PP for this user
-	pp = GetPPScore()
-	local dps = string.format("%d", pp * 1.56)	
-	print("Total PseudoPower: "..pp.." (approx. "..dps.." peak dps)")
+	local command, rest = msg:match("^(%S*)%s*(.-)$")
+	
+	if command == "version" then 
+		-- Display version
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower "..VERSION.." ("..SIM_VER.." "..SIM_PROFILE..")", 1, 1, 0);
+	elseif command == "about" then 
+		-- Display version
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower "..VERSION.." ("..SIM_VER.." "..SIM_PROFILE..")", 1, 1, 0);
+	elseif command == "show" then 
+		-- Display total Pseeudopower
+		local ppsum = GetPPScore()
+		DEFAULT_CHAT_FRAME:AddMessage("Total pseudopower "..ppsum, 1, 1, 0);
+	elseif command == "env" then
+		-- Display/Set Environment
+		if rest == "raid" then HIT_ENV="raid"
+		elseif rest == "pve" then HIT_ENV="pve" end
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower environment is "..HIT_ENV)
+	elseif command == "spellpower" then
+		-- Display/Set spellpower scaling factor
+		if tonumber(rest) ~= nil then SPELL_POWER=rest end
+		if reset=="reset" then SPELL_POWER=PP["spellpower"] end
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower spell power scale factor is "..SPELL_POWER)
+	elseif command == "hit" then
+		-- Display/Set hit rating scaling factor
+		if tonumber(rest) ~= nil then SPELL_HIT=rest end
+		if reset=="reset" then SPELL_HIT=PP["hit"] end
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower spell hit scale factor is "..SPELL_HIT)	
+	elseif command == "hitcap" then
+		-- Display current hitcap information
+		hitCap, hitBal = HitCap()
+		DEFAULT_CHAT_FRAME:AddMessage("You need "..hitCap.." hit for the current environment. Your balance is "..hitBal)	
+	elseif command == "help" then
+		-- Display usage
+		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]") 	
+		DEFAULT_CHAT_FRAME:AddMessage("Commands:") 	
+		DEFAULT_CHAT_FRAME:AddMessage("    env [raid/pve] - Weigh hit for raids, or general PVE")	
+		DEFAULT_CHAT_FRAME:AddMessage("    help - This help text")
+		DEFAULT_CHAT_FRAME:AddMessage("    hit (value) - Display/set hit rating scaling factor")
+		DEFAULT_CHAT_FRAME:AddMessage("    hitcap - Get information about your current hit cap")
+		DEFAULT_CHAT_FRAME:AddMessage("    show - Output the total current Pseudopower")
+		DEFAULT_CHAT_FRAME:AddMessage("    spellpower (value) - Display/set spellpower scaling factor")
+		DEFAULT_CHAT_FRAME:AddMessage("    version - Show verbose version information")		
+	else 
+		-- Command missing/error, display usage
+		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]", 1, 1, 0) 			
+		DEFAULT_CHAT_FRAME:AddMessage("       /pp help (for more information)", 1, 1, 0) 			
+	end			
 end
 
 
@@ -81,13 +139,17 @@ local function OnTooltipSetItem(self)
 		if pp then		
 			-- Show optimizations
 			self:AddLine(" ")
+			
+			-- Hit value hilight color
+			_, hitBal = HitCap()
+			if hitBal > 0 then hilight = "|cFFFF8000" else hilight = "|cFF888888" end
 		 		
  			-- Display the PseudoPower of the item as-is
  			if pp then
  				if pph > pp then 
- 					self:AddLine(white.."PseudoPower:|r "..pp.." ("..pph.." w/ hit)")
+ 					self:AddLine(white.."PseudoPower "..pp..hilight.." ("..pph..")")
  				else 
-     				self:AddLine(white.."PseudoPower:|r "..pp)
+     				self:AddLine(white.."PseudoPower "..pp)
      			end
 			end
 			
@@ -101,9 +163,9 @@ local function OnTooltipSetItem(self)
 			
 			if opp > pp then					
 				if opph > opp then
-					self:AddLine(white.."Optimal PseudoPower:|r "..opp.." ("..opph.." w/ hit)")
+					self:AddLine(white.."Optimal PseudoPower "..opp..hilight.." ("..opph..")")
 				else
-	     			self:AddLine(white.."Optimal PseudoPower:|r "..opp)		
+	     			self:AddLine(white.."Optimal PseudoPower "..opp)		
 	        	end
 				
 				-- Show optimizations
@@ -164,6 +226,43 @@ local CUSTOM_ITEM_DATA = {
 	[47726] = { 0, 114, 42, 0, 0, 0}, 	-- Talisman of Volatile Power (ilvl 232)
 }
 
+-------------
+-- Hit Cap --
+-------------
+function HitCap()
+	local scale = {
+		[80] = 26.232,
+		[81] = 34.445,
+		[82] = 45.231,
+		[83] = 59.420,
+		[84] = 78.022,
+		[85] = 102.446,
+	}
+	
+	local level = UnitLevel("player")
+	local race = UnitClass("player")
+	local sumHIT = 0
+	
+	-- Base hit for raid and pve situtions
+	if HIT_ENV == "raid" then base_hit = 83	end
+	if HIT_ENV == "pve" then base_hit = 96 end
+	
+	-- Dranai with [Heroic Presence]
+	if race == "Draenei" then base_hit = base_hit + 1 end 
+	
+	-- Get current Hit
+	for i=1,18 do
+		local itemLink = GetInventoryItemLink("player", i)
+		if (itemLink) then
+			local _, _, hit = GetValue(itemLink)
+			sumHIT = sumHIT + hit
+		end
+	end 
+	
+	hitcap = math.ceil((100 - base_hit) * scale[level])
+	balance = hitcap - sumHIT
+	return hitcap, balance
+end
 
 --------------------------------
 -- Calculate PP and PPH value --
@@ -181,8 +280,8 @@ function GetValue(item)
 
 	local statData = {}
 	
-	-- Check to see if there is custom data for this item ID
 	if CUSTOM_ITEM_DATA[itemID] then
+		-- Use custom data for this item ID
 		statData["SPELL_DMG"], statData["SPELL_CRIT_RATING"], statData["SPELL_HASTE_RATING"], 
 		statData["SPI"], statData["INT"], statData["SPELL_HIT_RATING"] = unpack(CUSTOM_ITEM_DATA[itemID])
 	else 	
@@ -196,7 +295,7 @@ function GetValue(item)
 	if (statData["SPELL_CRIT_RATING"]) then pp = pp + statData["SPELL_CRIT_RATING"] * SPELL_CRIT end
 	if (statData["SPELL_HASTE_RATING"]) then pp = pp + statData["SPELL_HASTE_RATING"] * SPELL_HASTE end
 	if (statData["INT"]) then pp = pp + statData["INT"] * BONUS_INT end
-	if (statData["SPI"]) then pp = pp + statData["SPI"] * BONUS_SPI end
+	if (statData["MASTERY_RATING"]) then pp = pp + statData["MASTERY_RATING"] * SPELL_MASTERY end
 	
 	-- TODO: Find a better method for adding a red gem to an Eternal Belt Buckle
 	if itemSlot == "INVTYPE_WAIST" then 
@@ -208,15 +307,16 @@ function GetValue(item)
 		end		
 	end
 	
-	-- Do the final calculation including Hit
+	-- Do the final calculation including Hit (spirit is now only a hit stat for spellcasters)
 	local pph = pp
 	if (statData["SPELL_HIT_RATING"]) then pph = pph + statData["SPELL_HIT_RATING"] * SPELL_HIT end
+	if (statData["SPI"]) then pph = pph + statData["SPI"] * BONUS_SPI end
 
 	-- Set the hit to a variable
 	local hit = 0
 	if (statData["SPELL_HIT_RATING"]) then hit = statData["SPELL_HIT_RATING"] end
 		
-	return pp, pph, hit
+	return math.ceil(pp), math.ceil(pph), math.ceil(hit)
 end
 
 
@@ -230,13 +330,7 @@ function GetPPScore()
 	local pp = 0
 	local pph = 0
 	local hit = 0
-	local hitCap = 289
-	
-	-- Fix hitCap if we are a Draenei 
-	local race = UnitClass("player")
-	if race == "Draenei" then
-		hitCap = 263
-	end 
+	local hitCap = HitCap()
 	
 	for i=1,18 do
 		local itemLink = GetInventoryItemLink("player", i)
@@ -247,19 +341,19 @@ function GetPPScore()
 			sumPPH = sumPPH + pph
 			sumHIT = sumHIT + hit
 			
-			debugPrint(itemLink.." "..pp.." ("..pph.." w/ hit)")
+			--debugPrint(itemLink.." "..pp.." ("..pph.." w/ hit)")
 		end
 	end 
 	
 	if sumHIT < hitCap then
 		-- We are below hit cap, everything counts
-		debugPrint("Your current gear setup is not optimal for raiding, you need "..(hitCap - sumHIT).." more hit")
-		return sumPPH
+		--debugPrint("Your current gear setup is not optimal for raiding, you need "..(hitCap - sumHIT).." more hit")
+		return math.ceil(sumPPH)
 	else
 		-- We are at or above the hit cap, so we need to calculate the PP and ignore
 		-- any hit above the hitcap (since its useless)
 		sumPP = sumPP + (hitCap * SPELL_HIT)
-		return sumPP
+		return math.ceil(sumPP)
 	end	
 end
 
@@ -272,47 +366,52 @@ function OptimalEnchant(itemSlot)
 	local isEnchanter = false
 	local isTailor = false
 	local isEngineer = false
+	local isScribe = false
 	local isLeatherworker = false
 
 	-- Determine the available skills
-	for skillIndex = 1, GetNumSkillLines() do
-		skillName, isHeader, isExpanded, skillRank, numTempPoints, skillModifier,
-		skillMaxRank, isAbandonable, stepCost, rankCost, minLevel, skillCostType,
-		skillDescription = GetSkillLineInfo(skillIndex)
-		if isHeader == nil then
-			if skillName == "Enchanting" then isEnchanter = true end
-			if skillName == "Tailoring" then isTailor = true end
-			if skillName == "Engineering" then isEngineer = true end
-			if skillName == "Leatherworking" then isLeatherworker = true end
-		end
+	prof1, prof2 = GetProfessions()	
+	
+	if prof1 ~= nil then 
+		skillName = GetProfessionInfo(prof1)
+		if skillName == "Enchanting" then isEnchanter = true end
+		if skillName == "Tailoring" then isTailor = true end
+		if skillName == "Inscription" then isScribe = true end
+		if skillName == "Engineering" then isEngineer = true end
+		if skillName == "Leatherworking" then isLeatherworker = true end
 	end
-		
+	
+	if prof2 ~= nil then 
+		skillName = GetProfessionInfo(prof2)
+		if skillName == "Enchanting" then isEnchanter = true end
+		if skillName == "Tailoring" then isTailor = true end
+		if skillName == "Inscription" then isScribe = true end
+		if skillName == "Engineering" then isEngineer = true end
+		if skillName == "Leatherworking" then isLeatherworker = true end
+	end
 
-	if     itemSlot == "INVTYPE_HEAD"		then return "Arcanum of Burning Mysteries", 3820
-    elseif itemSlot == "INVTYPE_SHOULDER"	then return "Greater Inscription of the Storm", 3810
-    elseif itemSlot == "INVTYPE_CHEST" 		then return "Enchant Chest - Powerful Stats", 3832
-    elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Powerful Stats", 3832
-    elseif itemSlot == "INVTYPE_WAIST" 		then return "Eternal Belt Buckle + Red Gem", 3729
-    elseif itemSlot == "INVTYPE_LEGS"       then
-       if isTailor then return "Sanctified Spellthread", 3872
-       else return "Brilliant Spellthread", 3719 end    
-    elseif itemSlot == "INVTYPE_FEET" 		then 
-    	if isEngineer then return "Nitro Boosts", 3606
-    	else return "Enchant Boots - Icewalker", 3826 end
+	if     itemSlot == "INVTYPE_HEAD"		then return "Arcanum of Hyjal", 4207
+    elseif itemSlot == "INVTYPE_SHOULDER"	then 
+		if isScribe then return "Felfire Inscription", 4196
+		else return "Greater Inscription of Charged Lodestone", 4200 end
+    elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Peerless Stats", 4102
+	elseif itemSlot == "INVTYPE_WAIST" 		then return "Ebonsteel Belt Buckle + Red Gem", 3729
+    elseif itemSlot == "INVTYPE_LEGS"       then return "Powerful Ghostly Spellthread", 4110    
+    elseif itemSlot == "INVTYPE_FEET" 		then return "Enchant Boots - Haste", 4069
     elseif itemSlot == "INVTYPE_HAND" 		then 
-    	if isEngineer then return "Hyperspeed Accelerators", 3604
-    	else return "Enchant Gloves - Exceptional Spellpower", 3246 end
+    	if isEngineer then return "Synapse Springs", 4179
+    	else return "Enchant Gloves - Greater Mastery", 4107 end
     elseif itemSlot == "INVTYPE_FINGER" 	then 
-    	if isEnchanter then return "Enchant Ring - Greater Spellpower", 3840 end
+    	if isEnchanter then return "Enchant Ring - Intellect", 4080 end
     elseif itemSlot == "INVTYPE_CLOAK" 		then 
-    	if isTailor then return "Lightweave Embroidery", 3722
-    	elseif isEngineer then return "Springy Arachnoweave", 3859
-    	else return "Enchant Cloak - Greater Speed", 3831 end
-    elseif itemSlot == "INVTYPE_WEAPON" 	then return "Enchant Weapon - Mighty Spellpower", 3855
-    elseif itemSlot == "INVTYPE_2HWEAPON" 	then return "Enchant Staff - Greater Spellpower", 3854
+    	if isTailor then return "Lightweave Embroidery (Rank 2)", 4115
+    	else return "Enchant Cloak - Greater Intellect", 4096 end
+    elseif itemSlot == "INVTYPE_WEAPONMAINHAND" 	then return "Enchant Weapon - Power Torrent", 4097
+    elseif itemSlot == "INVTYPE_2HWEAPON" 	then return "Enchant Weapon - Power Torrent", 4097
+	elseif itemSlot == "INVTYPE_HOLDABLE" 	then return "Enchant Off-Hand - Superior Intellect", 4091
     elseif itemSlot == "INVTYPE_WRIST" 		then 
-		if isLeatherworker then return "Fur Lining - Spell Power", 3758
-    	else return "Enchant Bracers - Superior Spellpower", 2332 end
+		if isLeatherworker then return "Draconic Embossment - Intellect", 4192
+    	else return "Enchant Bracers - Mighty Intellect", 4257 end
 	else									 return nil, nil	
 	end
 
@@ -364,6 +463,9 @@ function OptimalItem(item)
 			optimalString = optimalString.."     Match Sockets"
 		end
 	end
+	
+	-- Reforge stats (if prudent)
+	
 	
 	-- Return the Optimized item
 	return link, optimalString
