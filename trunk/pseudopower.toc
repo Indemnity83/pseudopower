@@ -2,7 +2,7 @@
 ## Title: PseudoPower
 ## Notes: Calculate Psudopower ratings for gear
 ## Author: Indemnity83
-## Version: 1.3.0
+## Version: 2.0.0-beta
 ## Revision: $Id$
 
 #UTF8
@@ -11,8 +11,10 @@ UTF8\utf8.lua
 
 # Libraries 
 libs\LibStub\LibStub.lua
-libs\LibStatLogic-1.1\lib.xml
-libs\LibTipHooker-1.2\lib.xml
+libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+libs\LibStatLogic-1.2\lib.xml
+libs\LibTipHooker-1.1\lib.xml
+libs\LibWho-2.0\LibWho-2.0.lua
 
 # Core
 pseudopower.lua 
