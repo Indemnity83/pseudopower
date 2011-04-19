@@ -11,10 +11,8 @@ UTF8\utf8.lua
 
 # Libraries 
 libs\LibStub\LibStub.lua
-libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
 libs\LibStatLogic-1.2\lib.xml
 libs\LibTipHooker-1.1\lib.xml
-libs\LibWho-2.0\LibWho-2.0.lua
 
 # Core
 pseudopower.lua 
