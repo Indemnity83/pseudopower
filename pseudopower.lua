@@ -9,7 +9,6 @@ local SIM_PROFILE = "Priest_Shadow_T11_372"
 ---------------
 local StatLogic = LibStub("LibStatLogic-1.2")
 local TipHooker = LibStub("LibTipHooker-1.1")
-local Who = LibStub('LibWho-2.0')
 
 ---------------------
 -- Local variables --
