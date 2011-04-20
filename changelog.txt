@@ -1,7 +1,14 @@
-Release 1.3.0
+Release 2.0.0-beta
+  * Implemented Cataclysm game mechanics
+  * Implemented Cataclysm Enchants
+  * Implemented Cataclysm Gems
   * Updated reference libraries
   * Updated TOC for 4.0.0
-  * Updated scaling factors for 4.0.0
+  * Updated scaling factors for 4.0.3
+  * Simplified display of pseudopower numbers
+  * Added lots of slash commands (/pp help for more info)
+  * Added ability to adjust calculations for Raid or PvE encounters
+  * Pseudopower numbers are now reasonably useful for 80-85 leveling
 
 Release 1.2.6
   * Updated TOC for 3.3.0
