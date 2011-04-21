@@ -246,8 +246,9 @@ function HitCap()
 	if HIT_ENV == "raid" then base_hit = 83	end
 	if HIT_ENV == "pve" then base_hit = 96 end
 	
-	-- Dranai with [Heroic Presence]
+	-- Race bonuses
 	if race == "Draenei" then base_hit = base_hit + 1 end 
+	if race == "Human" then base_it = base_hit + 3 end
 	
 	-- Get current Hit
 	for i=1,18 do
