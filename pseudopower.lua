@@ -1,8 +1,8 @@
 -- $Id$
-
 local VERSION = "2.0.0-beta"
 local SIM_VER = "403-2"
 local SIM_PROFILE = "Priest_Shadow_T11_372"
+
 
 ---------------
 -- Libraries --
@@ -10,19 +10,21 @@ local SIM_PROFILE = "Priest_Shadow_T11_372"
 local StatLogic = LibStub("LibStatLogic-1.2")
 local TipHooker = LibStub("LibTipHooker-1.1")
 
+
 ---------------------
--- Local variables --
+-- Local Variables --
 ---------------------
-local DEBUG = true
-local quality_threshold = 1
 local green = "|cff20ff20"
 local red = "|cffff2020"
 local yellow = "|cFFFFFF00"
 local white = "|cffffffff"
+local orange = "|cFFFF8000"
+local grey = "|cFF888888"
 
---------------------
--- Config Options --
---------------------
+
+--------------
+-- Defaults --
+--------------
 local PP = {
 	["env"] 			= "raid",
 	["spellpower"]		= 0.7935,
@@ -35,9 +37,10 @@ local PP = {
 }
 
 -----------------
--- Multiplyers -- 
+-- Options -- 
 -----------------
 -- TODO: make this SavedVariables
+local quality_threshold = 1
 local SPELL_POWER = 	PP["spellpower"]
 local SPELL_HIT = 		PP["hit"]
 local SPELL_CRIT = 		PP["crit"]
@@ -62,14 +65,13 @@ local yGem = StatLogic:GetGemID(yGemId)
 local mGem = StatLogic:GetGemID(mGemId)
 
 
------------------
--- Debug Tools --
------------------
-local function debugPrint(text)
-	if DEBUG == true then
-		print(green.."PP:|r "..text)
-	end
-end
+----------------------
+-- Add tooltip hook --
+----------------------
+local _, class = UnitClass("player")
+if (class == "PRIEST") then	
+	TipHooker:Hook(OnTooltipSetItem, "item")	
+end 
 
 
 ---------------------
@@ -94,6 +96,10 @@ function SlashCmdList.PP(msg, editbox)
 		if rest == "raid" then HIT_ENV="raid"
 		elseif rest == "pve" then HIT_ENV="pve" end
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower environment is "..HIT_ENV)
+	elseif command == "qt" then
+		-- Display/Set quality threashold
+		if tonumber(rest) ~ nil then quality_threashold = rest end
+		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower quality threshold is "..quality_threashold)
 	elseif command == "spellpower" then
 		-- Display/Set spellpower scaling factor
 		if tonumber(rest) ~= nil then SPELL_POWER=rest end
@@ -141,7 +147,7 @@ local function OnTooltipSetItem(self)
 			
 			-- Hit value hilight color
 			_, hitBal = HitCap()
-			if hitBal > 0 then hilight = "|cFFFF8000" else hilight = "|cFF888888" end
+			if hitBal > 0 then hilight = orange else hilight = grey end
 		 		
  			-- Display the PseudoPower of the item as-is
  			if pp then
@@ -176,15 +182,6 @@ local function OnTooltipSetItem(self)
 		end
 	end
 end
-
-
------------------------
--- Add tooltip hooks --
------------------------
-local _, class = UnitClass("player")
-if (class == "PRIEST") then	
-	TipHooker:Hook(OnTooltipSetItem, "item")	
-end 
 
 
 ------------------------------------------------------
@@ -314,7 +311,8 @@ function GetValue(item)
 
 	-- Set the hit to a variable
 	local hit = 0
-	if (statData["SPELL_HIT_RATING"]) then hit = statData["SPELL_HIT_RATING"] end
+	if (statData["SPELL_HIT_RATING"]) then hit = hit + statData["SPELL_HIT_RATING"] end
+	if (statData["SPI"]) then hit = hit + statData["SPI"] end
 		
 	return math.ceil(pp), math.ceil(pph), math.ceil(hit)
 end
@@ -340,14 +338,11 @@ function GetPPScore()
 			sumPP = sumPP + pp
 			sumPPH = sumPPH + pph
 			sumHIT = sumHIT + hit
-			
-			--debugPrint(itemLink.." "..pp.." ("..pph.." w/ hit)")
 		end
 	end 
 	
 	if sumHIT < hitCap then
 		-- We are below hit cap, everything counts
-		--debugPrint("Your current gear setup is not optimal for raiding, you need "..(hitCap - sumHIT).." more hit")
 		return math.ceil(sumPPH)
 	else
 		-- We are at or above the hit cap, so we need to calculate the PP and ignore
@@ -358,10 +353,12 @@ function GetPPScore()
 end
 
 
-----------------------------------------
--- Returns the best enchants per slot --
-----------------------------------------
-function OptimalEnchant(itemSlot)
+--------------------------
+-- Returns BIS enchants --
+--------------------------
+function OptimalEnchant( item )
+
+	local _,_,_,_,_,_,_,_,itemSlot = GetItemInfo( item )
 
 	local isEnchanter = false
 	local isTailor = false
@@ -412,62 +409,70 @@ function OptimalEnchant(itemSlot)
     elseif itemSlot == "INVTYPE_WRIST" 		then 
 		if isLeatherworker then return "Draconic Embossment - Intellect", 4192
     	else return "Enchant Bracers - Mighty Intellect", 4257 end
-	else									 return nil, nil	
+	else									 return nil, 0	
 	end
 
 end 
+
+----------------------------
+-- Returns Optimized Gems --
+----------------------------
+-- TODO: Optimize! This function is fairly ineffecient and highly static
+function OptimalGems( item )
+	
+	-- Build an item with all red gems, and one with matched sockets
+	redGems = StatLogic:BuildGemmedTooltip( item, rGem, rGem, rGem, mGem )
+	matchedGems  = StatLogic:BuildGemmedTooltip( item, rGem, yGem, bGem, mGem )
+	
+	-- If there was no change, the item doesn't have sockets
+	if item == redGems and item == matchedGems then return nil, 0, 0, 0, 0 end 
+	
+	-- Do the fairly expensive valuation of each gem option
+	local ppRedGems = GetValue( redGems )
+	local ppMatchedGems = GetValue( matchedGems )
+	
+	-- Return the best option
+	if ppRedGems >= ppMatchedGems then 
+		return "All Red Gems", rGem, rgem, rgem, mGem
+	else 
+		return "Match Sockets", rGem, ygem, bgem, mGem
+	end
+	
+end
 
 
 --------------------
 -- Optimize Item ---
 --------------------
-function OptimalItem(item)
+function OptimalItem( existingItem )
+
+	-- Establish our local variables
+	local baseItem = StatLogic:RemoveEnchantGem( existingItem )
+	local existingEnchant = StatLogic:RemoveGem( existingItem )
+	local existingGems = StatLogic:RemoveEnchant( existingItem )
+	local optimizations = ""
 	
-	-- Strip off anything thats on it now
-	link = StatLogic:RemoveEnchantGem(item)
+	-- BIS enchant	
+	local enchantName, enchantID = OptimalEnchant( baseItem )
+	local optimalEnchant = StatLogic:ModEnchantGem( baseItem, enchantID )
 	
-	-- Add the enchant (if applicable)
-	local _,_,_,_,_,_,_,_,ItemSlot = GetItemInfo(item)
-	local eName, eID = OptimalEnchant(ItemSlot)
-	if eID then link = StatLogic:ModEnchantGem(link,eID) end
+	-- Optimal gems
+	local gemTooltip, gemRed, gemYellow, gemBlue, gemMeta = OptimalGems( baseItem )
+	local optimalGems = StatLogic:ModEnchantGem( baseItem, 0, gemRed, gemYellow, gemBlue, gemMeta )
 	
-	-- Check if the optimal enchant, is the current enchant
-	linkEnchant = StatLogic:ModEnchantGem(item, eID)
-		
-	local optimalString = ""
-	if eName then	
-		if linkEnchant == item then optimalString = "     "..green..eName.."|r" else 
-		   							optimalString = "     "..red..eName.."|r" 
-		end	  
-	end	
+	-- Build our optimal item
+	optimalItem = StatLogic:ModEnchantGem( baseItem, enchantID, gemRed, gemYellow, gemBlue, gemMeta )
 	
-	-- Build and determine the better gem option
-	unmatchedLink = StatLogic:BuildGemmedTooltip(link, rGem, rGem, rGem, mGem)
-	matchedLink  = StatLogic:BuildGemmedTooltip(link, rGem, yGem, bGem, mGem)
+	-- Build the optimizations list
+	if existingEnchant == optimalEnchant then enchantHighlight = green else enchantHighlight = red
+	if existingGems ==  optimalGems then gemHighlight = green else gemHighlight = red
+	if enchantName then optimizations = "     "..enchantHighlight..enchantName.."|r" end
+	if enchantName and gemTooltop then optimizations = optimizations .. "\n" end
+	if gemTooltip then optimizations = "     "..gemHighlight..gemTooltip.."|r" end
 	
-	-- Check to make sure something actually happened, if we 
-	-- actually gemed something, the links wont be the same
-	if matchedLink ~= link then
-		linkGem = StatLogic:RemoveEnchant(item)
-	
-		if eName then optimalString = optimalString.."\n" end	 
-		local _, upph, _ = GetValue(unmatchedLink)
-		local _, mpph, _ = GetValue(matchedLink)	
-		if upph >= mpph then 
-			link = unmatchedLink
-			if linkGem == link then optimalString = optimalString..green else optimalString = optimalString..red end
-			optimalString = optimalString.."     All Red Gems"
-		else 
-			link = matchedLink
-			if linkGem == link then optimalString = optimalString..green else optimalString = optimalString..red end 
-			optimalString = optimalString.."     Match Sockets"
-		end
-	end
-	
-	-- Reforge stats (if prudent)
-	
+	-- TODO: Reforge stats	
 	
 	-- Return the Optimized item
-	return link, optimalString
+	return optimalItem, optimizations
 
 end
