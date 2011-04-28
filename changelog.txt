@@ -1,3 +1,7 @@
+Release 2.0.0-beta-2
+ * Expanded spell hit calculations to cover all levels
+ * Bug fixes
+
 Release 2.0.0-beta
   * Implemented Cataclysm game mechanics
   * Implemented Cataclysm Enchants
