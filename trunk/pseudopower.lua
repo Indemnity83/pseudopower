@@ -1,5 +1,5 @@
 -- $Id$
-local VERSION = "2.0.0-beta"
+local VERSION = "2.0.0-beta-2"
 local SIM_VER = "403-2"
 local SIM_PROFILE = "Priest_Shadow_T11_372"
 
@@ -65,15 +65,6 @@ local yGem = StatLogic:GetGemID(yGemId)
 local mGem = StatLogic:GetGemID(mGemId)
 
 
-----------------------
--- Add tooltip hook --
-----------------------
-local _, class = UnitClass("player")
-if (class == "PRIEST") then	
-	TipHooker:Hook(OnTooltipSetItem, "item")	
-end 
-
-
 ---------------------
 -- Command Handler --
 ---------------------
@@ -98,7 +89,7 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower environment is "..HIT_ENV)
 	elseif command == "qt" then
 		-- Display/Set quality threashold
-		if tonumber(rest) ~ nil then quality_threashold = rest end
+		if tonumber(rest) ~= nil then quality_threashold = rest end
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower quality threshold is "..quality_threashold)
 	elseif command == "spellpower" then
 		-- Display/Set spellpower scaling factor
@@ -184,6 +175,15 @@ local function OnTooltipSetItem(self)
 end
 
 
+----------------------
+-- Add tooltip hook --
+----------------------
+local _, class = UnitClass("player")
+if (class == "PRIEST") then	
+	TipHooker:Hook(OnTooltipSetItem, "item")	
+end 
+
+
 ------------------------------------------------------
 -- Used to display PP values for special case items --
 ------------------------------------------------------
@@ -229,11 +229,11 @@ function HitCap()
 
 	-- Cata formula hasn't been derived yet, so we need these scaling factors
 	local scale = {
-			[81] = 34.44481,
-			[82] = 45.2318,
-			[83] = 59.42037,
-			[84] = 78.02179,
-			[85] = 102.44574,
+		[81] = 34.44481,
+		[82] = 45.2318,
+		[83] = 59.42037,
+		[84] = 78.02179,
+		[85] = 102.44574,
 	}
 	
 	local level = UnitLevel("player")
@@ -266,11 +266,11 @@ function HitCap()
 	-- Get current Hit
 	local sumHIT = 0
 	for i=1,18 do
-			local itemLink = GetInventoryItemLink("player", i)
-			if (itemLink) then
-					local _, _, hit = GetValue(itemLink)
-					sumHIT = sumHIT + hit
-			end
+		local itemLink = GetInventoryItemLink("player", i)
+		if (itemLink) then
+			local _, _, hit = GetValue(itemLink)
+			sumHIT = sumHIT + hit
+		end
 	end 
 	
 	hitcap = math.ceil(rating)
@@ -480,8 +480,8 @@ function OptimalItem( existingItem )
 	optimalItem = StatLogic:ModEnchantGem( baseItem, enchantID, gemRed, gemYellow, gemBlue, gemMeta )
 	
 	-- Build the optimizations list
-	if existingEnchant == optimalEnchant then enchantHighlight = green else enchantHighlight = red
-	if existingGems ==  optimalGems then gemHighlight = green else gemHighlight = red
+	if existingEnchant == optimalEnchant then enchantHighlight = green else enchantHighlight = red end
+	if existingGems ==  optimalGems then gemHighlight = green else gemHighlight = red end
 	if enchantName then optimizations = "     "..enchantHighlight..enchantName.."|r" end
 	if enchantName and gemTooltop then optimizations = optimizations .. "\n" end
 	if gemTooltip then optimizations = "     "..gemHighlight..gemTooltip.."|r" end

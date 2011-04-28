@@ -2,7 +2,7 @@
 ## Title: PseudoPower
 ## Notes: Calculate Psudopower ratings for gear
 ## Author: Indemnity83
-## Version: 2.0.0-beta
+## Version: 2.0.0-beta-2
 ## Revision: $Id$
 
 #UTF8
