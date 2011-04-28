@@ -1,4 +1,4 @@
-## Interface: 40000
+## Interface: 40100
 ## Title: PseudoPower
 ## Notes: Calculate Psudopower ratings for gear
 ## Author: Indemnity83

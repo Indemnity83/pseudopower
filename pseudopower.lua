@@ -226,39 +226,55 @@ local CUSTOM_ITEM_DATA = {
 -- Hit Cap --
 -------------
 function HitCap()
+
+	-- Cata formula hasn't been derived yet, so we need these scaling factors
 	local scale = {
-		[80] = 26.232,
-		[81] = 34.445,
-		[82] = 45.231,
-		[83] = 59.420,
-		[84] = 78.022,
-		[85] = 102.446,
+			[81] = 34.44481,
+			[82] = 45.2318,
+			[83] = 59.42037,
+			[84] = 78.02179,
+			[85] = 102.44574,
 	}
 	
 	local level = UnitLevel("player")
 	local race = UnitClass("player")
-	local sumHIT = 0
-	
-	-- Base hit for raid and pve situtions
-	if HIT_ENV == "raid" then base_hit = 83	end
-	if HIT_ENV == "pve" then base_hit = 96 end
+	local ratingBase = 8
+
+	-- basic percent hit required for each environment
+	if HIT_ENV == "raid" then pctHit = 17 end
+	if HIT_ENV == "pve" then pctHit = 4 end
 	
 	-- Race bonuses
-	if race == "Draenei" then base_hit = base_hit + 1 end 
-	if race == "Human" then base_it = base_hit + 3 end
+	if race == "Draenei" then pctHit = pctHit - 1 end 
+	if race == "Human" then pctHit = pctHit - 3 end
+	
+	-- Level 1-10
+	if level <= 10 then rating = pctHit * ratingBase * ( 2 / 52 )
+
+	-- Level 11-60
+    elseif level <= 60 then rating = pctHit * ratingBase * ((level - 8) / 52)
+        
+	-- Level 61-70
+	elseif level <= 70 then rating = pctHit * ratingBase * (82 / (262 - 3 * level))
+	
+	-- Level 71-80
+	elseif level <= 80 then rating = pctHit * ratingBase * ((82/52) * math.pow((131/63),((level - 70)/10)));
+	
+	-- Level 81-85
+	else rating = pctHit * scale[level] end
 	
 	-- Get current Hit
+	local sumHIT = 0
 	for i=1,18 do
-		local itemLink = GetInventoryItemLink("player", i)
-		if (itemLink) then
-			local _, _, hit = GetValue(itemLink)
-			sumHIT = sumHIT + hit
-		end
+			local itemLink = GetInventoryItemLink("player", i)
+			if (itemLink) then
+					local _, _, hit = GetValue(itemLink)
+					sumHIT = sumHIT + hit
+			end
 	end 
 	
-	hitcap = math.ceil((100 - base_hit) * scale[level])
-	balance = hitcap - sumHIT
-	return hitcap, balance
+	hitcap = math.ceil(rating)
+	return hitcap, sumHIT
 end
 
 --------------------------------
