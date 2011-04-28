@@ -9,6 +9,7 @@ local SIM_PROFILE = "Priest_Shadow_T11_372"
 ---------------
 local StatLogic = LibStub("LibStatLogic-1.2")
 local TipHooker = LibStub("LibTipHooker-1.1")
+local ReforgingInfo = LibStub("LibReforgingInfo-1.0")
 
 
 ---------------------
@@ -27,13 +28,27 @@ local grey = "|cFF888888"
 --------------
 local PP = {
 	["env"] 			= "raid",
-	["spellpower"]		= 0.7935,
-	["hit"]				= 0.3741,
-	["crit"]			= 0.4040,
-	["haste"]			= 0.5031,
-	["mastery"]			= 0.3857,
-	["int"]				= 1.000,
-	["spirit"]			= 0.3732,
+	["spellpower"]		= 0.79,
+	["hit"]				= 0.37,
+	["crit"]			= 0.44,
+	["haste"]			= 0.50,
+	["mastery"]			= 0.40,
+	["int"]				= 1.00,
+	["spirit"]			= 0.37,
+}
+
+----------------
+-- LEVELING!! --
+----------------
+local PP = {
+	["env"] 			= "pve",
+	["spellpower"]		= 0.6463,
+	["hit"]				= 0.4500,
+	["crit"]			= 0.2807,
+	["haste"]			= 0.3690,
+	["mastery"]			= 0.2661,
+	["int"]				= 1.0000,
+	["spirit"]			= 0.6463,
 }
 
 -----------------
@@ -65,15 +80,6 @@ local yGem = StatLogic:GetGemID(yGemId)
 local mGem = StatLogic:GetGemID(mGemId)
 
 
-----------------------
--- Add tooltip hook --
-----------------------
-local _, class = UnitClass("player")
-if (class == "PRIEST") then	
-	TipHooker:Hook(OnTooltipSetItem, "item")	
-end 
-
-
 ---------------------
 -- Command Handler --
 ---------------------
@@ -98,7 +104,7 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower environment is "..HIT_ENV)
 	elseif command == "qt" then
 		-- Display/Set quality threashold
-		if tonumber(rest) ~ nil then quality_threashold = rest end
+		if tonumber(rest) ~= nil then quality_threashold = rest end
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower quality threshold is "..quality_threashold)
 	elseif command == "spellpower" then
 		-- Display/Set spellpower scaling factor
@@ -112,9 +118,9 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower spell hit scale factor is "..SPELL_HIT)	
 	elseif command == "hitcap" then
 		-- Display current hitcap information
-		hitCap, hitBal = HitCap()
-		DEFAULT_CHAT_FRAME:AddMessage("You need "..hitCap.." hit for the current environment. Your balance is "..hitBal)	
-	elseif command == "help" then
+		hitCap, curHit = HitCap()
+		DEFAULT_CHAT_FRAME:AddMessage(HIT_ENV.." hit cap for your level is "..hitCap..", you currently have "..curHit..".")	
+	else
 		-- Display usage
 		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]") 	
 		DEFAULT_CHAT_FRAME:AddMessage("Commands:") 	
@@ -124,11 +130,7 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("    hitcap - Get information about your current hit cap")
 		DEFAULT_CHAT_FRAME:AddMessage("    show - Output the total current Pseudopower")
 		DEFAULT_CHAT_FRAME:AddMessage("    spellpower (value) - Display/set spellpower scaling factor")
-		DEFAULT_CHAT_FRAME:AddMessage("    version - Show verbose version information")		
-	else 
-		-- Command missing/error, display usage
-		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]", 1, 1, 0) 			
-		DEFAULT_CHAT_FRAME:AddMessage("       /pp help (for more information)", 1, 1, 0) 			
+		DEFAULT_CHAT_FRAME:AddMessage("    version - Show verbose version information")			
 	end			
 end
 
@@ -146,7 +148,8 @@ local function OnTooltipSetItem(self)
 			self:AddLine(" ")
 			
 			-- Hit value hilight color
-			_, hitBal = HitCap()
+			local hitCap, hitCur = HitCap()
+			local hitBal = hitCap - hitCur
 			if hitBal > 0 then hilight = orange else hilight = grey end
 		 		
  			-- Display the PseudoPower of the item as-is
@@ -162,11 +165,24 @@ local function OnTooltipSetItem(self)
 			local optimalItem, optimalString = OptimalItem(Item)
 			local opp, opph, _ = GetValue(optimalItem)
 			
-			-- Hack for Eternal Belt Buckle
-			local _,_,_,_,_,_,_,_,ItemSlot = GetItemInfo(Item)
-			if ItemSlot == "INVTYPE_WAIST" then opp = opp + 23 end	
+			-- Reforge stat suggestions (until LibStatLogic supports reforging we have to do it here has a hack)
+			if ReforgingInfo:IsItemReforged( Item ) then
+				-- Item is reforged already, double check its still optimal
+				local minus, plus = ReforgingInfo:GetReforgedStatNames(ReforgingInfo:GetReforgeID(Item))
+				if optimalString ~= "" then optimalString = optimalString .. "\n" end
+				optimalString = optimalString .. "     "..green.."Reforge "..minus.." to "..plus.."|r"				
+			else 
+				-- Look for an optimal reforge
+				local reforgeStats, rfpp, rfpph = OptimalReforge( Item )
+				if optimalString ~= "" then optimalString = optimalString .. "\n" end
+				if reforgeStats then optimalString = optimalString .. "     "..red..reforgeStats.."|r" end
+						
+				-- Adjust values for reforge suggestions
+				opp = (opp + rfpp)
+				opph = (opph + rfpph)
+			end			
 			
-			if opp > pp then					
+			if opp ~= pp then					
 				if opph > opp then
 					self:AddLine(white.."Optimal PseudoPower "..opp..hilight.." ("..opph..")")
 				else
@@ -182,6 +198,15 @@ local function OnTooltipSetItem(self)
 		end
 	end
 end
+
+
+----------------------
+-- Add tooltip hook --
+----------------------
+local _, class = UnitClass("player")
+if (class == "PRIEST") then	
+	TipHooker:Hook(OnTooltipSetItem, "item")	
+end 
 
 
 ------------------------------------------------------
@@ -226,28 +251,45 @@ local CUSTOM_ITEM_DATA = {
 -- Hit Cap --
 -------------
 function HitCap()
+
+	-- Cata formula hasn't been derived yet, so we need these scaling factors
 	local scale = {
-		[80] = 26.232,
-		[81] = 34.445,
-		[82] = 45.231,
-		[83] = 59.420,
-		[84] = 78.022,
-		[85] = 102.446,
+		[81] = 34.44481,
+		[82] = 45.2318,
+		[83] = 59.42037,
+		[84] = 78.02179,
+		[85] = 102.44574,
 	}
 	
 	local level = UnitLevel("player")
 	local race = UnitClass("player")
-	local sumHIT = 0
-	
-	-- Base hit for raid and pve situtions
-	if HIT_ENV == "raid" then base_hit = 83	end
-	if HIT_ENV == "pve" then base_hit = 96 end
+	local ratingBase = 8
+
+	-- basic percent hit required for each environment
+	if HIT_ENV == "raid" then pctHit = 17 end
+	if HIT_ENV == "pve" then pctHit = 4 end
 	
 	-- Race bonuses
-	if race == "Draenei" then base_hit = base_hit + 1 end 
-	if race == "Human" then base_it = base_hit + 3 end
+	if race == "Draenei" then pctHit = pctHit - 1 end 
+	if race == "Human" then pctHit = pctHit - 3 end
+	
+	-- Level 1-10
+	if level <= 10 then rating = pctHit * ratingBase * ( 2 / 52 )
+
+	-- Level 11-60
+    elseif level <= 60 then rating = pctHit * ratingBase * ((level - 8) / 52)
+	
+	-- Level 61-70
+	elseif level <= 70 then rating = pctHit * ratingBase * (82 / (262 - 3 * level))
+	
+	-- Level 71-80
+	elseif level <= 80 then rating = pctHit * ratingBase * ((82/52) * math.pow((131/63),((level - 70)/10)));
+	
+	-- Level 81-85
+	else rating = pctHit * scale[level] end
 	
 	-- Get current Hit
+	local sumHIT = 0
 	for i=1,18 do
 		local itemLink = GetInventoryItemLink("player", i)
 		if (itemLink) then
@@ -256,9 +298,8 @@ function HitCap()
 		end
 	end 
 	
-	hitcap = math.ceil((100 - base_hit) * scale[level])
-	balance = hitcap - sumHIT
-	return hitcap, balance
+	hitcap = math.ceil(rating)
+	return hitcap, sumHIT
 end
 
 --------------------------------
@@ -293,16 +334,6 @@ function GetValue(item)
 	if (statData["SPELL_HASTE_RATING"]) then pp = pp + statData["SPELL_HASTE_RATING"] * SPELL_HASTE end
 	if (statData["INT"]) then pp = pp + statData["INT"] * BONUS_INT end
 	if (statData["MASTERY_RATING"]) then pp = pp + statData["MASTERY_RATING"] * SPELL_MASTERY end
-	
-	-- TODO: Find a better method for adding a red gem to an Eternal Belt Buckle
-	if itemSlot == "INVTYPE_WAIST" then 
-		local testItem = StatLogic:ModEnchantGem(3729)
-		if testItem == itemLink then
-			-- Appears to have a belt buckle, hack in a red gem
-			rGemValue = GetValue(rGemId)
-			pp = pp + rGemValue
-		end		
-	end
 	
 	-- Do the final calculation including Hit (spirit is now only a hit stat for spellcasters)
 	local pph = pp
@@ -392,7 +423,7 @@ function OptimalEnchant( item )
 		if isScribe then return "Felfire Inscription", 4196
 		else return "Greater Inscription of Charged Lodestone", 4200 end
     elseif itemSlot == "INVTYPE_ROBE" 		then return "Enchant Chest - Peerless Stats", 4102
-	elseif itemSlot == "INVTYPE_WAIST" 		then return "Ebonsteel Belt Buckle + Red Gem", 3729
+	elseif itemSlot == "INVTYPE_WAIST" 		then return "Ebonsteel Belt Buckle", 3729
     elseif itemSlot == "INVTYPE_LEGS"       then return "Powerful Ghostly Spellthread", 4110    
     elseif itemSlot == "INVTYPE_FEET" 		then return "Enchant Boots - Haste", 4069
     elseif itemSlot == "INVTYPE_HAND" 		then 
@@ -441,6 +472,63 @@ function OptimalGems( item )
 end
 
 
+-----------------------------
+-- Returns Optimal Reforge --
+-----------------------------
+function OptimalReforge( item )
+
+	-- Logic: since the stats we care about are a finite subset of the 
+	-- overall list of changes, and rankable (lower valued stats should be
+	-- considered for reforging first) we can make a lot of assumptions. 
+	-- This also means this function is pretty dumb; even more so because you
+	-- really should be reforging at a character level, not an item level. 
+	
+	local maxChange = 0
+	local reforgeAdd = ""
+	local statData = {}
+	local secondaryStats = { 
+		["SPELL_CRIT_RATING"] = 	{"Crit Rating", SPELL_CRIT}, 
+		["SPELL_HASTE_RATING"] = 	{"Haste Rating", SPELL_HASTE},
+		["SPELL_HIT_RATING"] = 		{"Hit Rating", SPELL_HIT},
+		["MASTERY_RATING"] = 		{"Mastery Rating", SPELL_MASTERY},
+		["SPI"] = 					{"Spirit", BONUS_SPI}
+	}
+	
+	StatLogic:GetSum( item, statData )
+	local hitCap, curHit = HitCap()
+	local opReforge, opPP, opPPH = nil, 0, 0
+	
+	for mKey, minus in pairs(secondaryStats) do 
+		for pKey, plus in pairs(secondaryStats) do 
+			if minus ~= plus and statData[mKey] and not statData[pKey] then 			
+				local statPoints = math.floor(.4 * statData[mKey])
+				local subPPH, addPPH = 0, 0
+				
+				local subtract = math.floor(statPoints * minus[2])
+				if (hitCap - curHit) <= 0 and ( mKey == "SPELL_HIT_RATING" or mKey == "SPI" ) then 
+					subPPH = subtract
+					subtract = 0
+				end
+				
+				local add = math.floor(statPoints * plus[2])
+				if (hitCap - curHit) <= 0 and ( aKey == "SPELL_HIT_RATING" or aKey == "SPI" ) then 
+					addPPH = add
+					add = 0
+				end
+				
+				local delta = (add - subtract)
+				
+				if delta > maxChange then 
+					maxChange = delta
+					opReforge, opPP, opPPH = "Reforge " .. minus[1] .. " to " .. plus[1], delta, (addPPH - subPPH)
+				end
+			end
+		end
+	end
+	
+	return opReforge, opPP, opPPH
+end
+
 --------------------
 -- Optimize Item ---
 --------------------
@@ -464,13 +552,11 @@ function OptimalItem( existingItem )
 	optimalItem = StatLogic:ModEnchantGem( baseItem, enchantID, gemRed, gemYellow, gemBlue, gemMeta )
 	
 	-- Build the optimizations list
-	if existingEnchant == optimalEnchant then enchantHighlight = green else enchantHighlight = red
-	if existingGems ==  optimalGems then gemHighlight = green else gemHighlight = red
+	if existingEnchant == optimalEnchant then enchantHighlight = green else enchantHighlight = red end
+	if existingGems ==  optimalGems then gemHighlight = green else gemHighlight = red end
 	if enchantName then optimizations = "     "..enchantHighlight..enchantName.."|r" end
-	if enchantName and gemTooltop then optimizations = optimizations .. "\n" end
-	if gemTooltip then optimizations = "     "..gemHighlight..gemTooltip.."|r" end
-	
-	-- TODO: Reforge stats	
+	if enchantName and gemTooltip then optimizations = optimizations .. "\n" end
+	if gemTooltip then optimizations = optimizations .. "     "..gemHighlight..gemTooltip.."|r" end
 	
 	-- Return the Optimized item
 	return optimalItem, optimizations
