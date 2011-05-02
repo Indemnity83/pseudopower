@@ -1,5 +1,9 @@
 Release 2.0.0-beta-2
- * Expanded spell hit calculations to cover all levels
+ * Enhanced item display filtering (Issue 6)
+ * Updated TOC for 4.1
+ * Updated "/pp" command, will now display help
+ * Updated spell hit calculations to cover all levels
+ * Removed "/pp help" command
  * Bug fixes
 
 Release 2.0.0-beta
