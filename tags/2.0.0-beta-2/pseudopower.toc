@@ -1,0 +1,18 @@
+## Interface: 40100
+## Title: PseudoPower
+## Notes: Calculate Psudopower ratings for gear
+## Author: Indemnity83
+## Version: 2.0.0-beta-2
+## Revision: $Id$
+
+#UTF8
+UTF8\utf8data.lua
+UTF8\utf8.lua
+
+# Libraries 
+libs\LibStub\LibStub.lua
+libs\LibStatLogic-1.2\lib.xml
+libs\LibTipHooker-1.1\lib.xml
+
+# Core
+pseudopower.lua 

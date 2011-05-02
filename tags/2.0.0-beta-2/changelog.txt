@@ -1,0 +1,74 @@
+Release 2.0.0-beta-2
+ * Enhanced item display filtering (Issue 6)
+ * Updated TOC for 4.1
+ * Updated "/pp" command, will now display help
+ * Updated spell hit calculations to cover all levels
+ * Removed "/pp help" command
+ * Bug fixes
+
+Release 2.0.0-beta
+  * Implemented Cataclysm game mechanics
+  * Implemented Cataclysm Enchants
+  * Implemented Cataclysm Gems
+  * Updated reference libraries
+  * Updated TOC for 4.0.0
+  * Updated scaling factors for 4.0.3
+  * Simplified display of pseudopower numbers
+  * Added lots of slash commands (/pp help for more info)
+  * Added ability to adjust calculations for Raid or PvE encounters
+  * Pseudopower numbers are now reasonably useful for 80-85 leveling
+
+Release 1.2.6
+  * Updated TOC for 3.3.0
+  * Updated scaling factors for 3.3.0
+
+Release 1.2.5
+  * Updated TOC for 3.2.2
+  * Updated scaling factors for 3.2.2
+  * Added Tailoring leg enchant (Issue 8)
+  * Fixed problem with Belt Buckle (Issue 7)
+
+Release 1.2.4 2009-08-29
+  * Fixed Issue 2
+
+Release 1.2.3 2009-08-29
+  * Added more trinkets, end-game 3.1 and 3.2 trinkets
+  * Resolved Issue 1 (belt buckle not in optimized pp)
+  * Added revision to debug output in-game
+
+Release 1.2.2 2009-08-26
+  * Updated scaling factors
+  * Fixed bug in calculating total PP
+  * Added a hitcap warning (as debug msg)
+  * Added itemized output for /pp (as debug msg)
+  * Modified the way Custom Items are calculated
+  * Added many custom items (trinkets mostly)
+  * Optimal suggestions are color coded now
+
+Release 1.2.1 2009-08-26
+  * Added profession specific enchants
+  * Fixed bug that caused PP to not display
+  * Fixed gem suggestion language
+  * Fixed bug when using /pp with zero hit
+
+Release 1.2.0 2009-08-26
+  * Added functions to calculate total PP
+  * Added /pp & /pseudopower to display total PP
+  * Added "Optimized" information to tooltips (beta)
+  * Fixed bug where stats went off the tooltip
+  * Combined PP and PPH on one line		
+
+Release 1.1.2 2009-08-22
+  * Fixed bug with Localization
+
+Release 1.1.1 2009-08-22
+  * Fixed bug with "'SPELL_POWER' (a nil value)"
+  * PseudoPower will now not be displayed if 0
+
+Release 1.1.0 2009-08-22
+  * Added items to the special case list
+  * Changed coloring of tooltip text
+  * Fixed missing LibTipHooker from .toc
+
+Release 1.0.0 2009-08-21
+  * Initial build
