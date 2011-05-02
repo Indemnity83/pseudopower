@@ -103,9 +103,9 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("Pseudopower spell hit scale factor is "..SPELL_HIT)	
 	elseif command == "hitcap" then
 		-- Display current hitcap information
-		hitCap, hitBal = HitCap()
-		DEFAULT_CHAT_FRAME:AddMessage("You need "..hitCap.." hit for the current environment. Your balance is "..hitBal)	
-	elseif command == "help" then
+		hitCap, hitSum = HitCap()
+		DEFAULT_CHAT_FRAME:AddMessage("You need "..hitCap.." hit for the current environment. You currently have "..hitSum)	
+	else
 		-- Display usage
 		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]") 	
 		DEFAULT_CHAT_FRAME:AddMessage("Commands:") 	
@@ -116,29 +116,49 @@ function SlashCmdList.PP(msg, editbox)
 		DEFAULT_CHAT_FRAME:AddMessage("    show - Output the total current Pseudopower")
 		DEFAULT_CHAT_FRAME:AddMessage("    spellpower (value) - Display/set spellpower scaling factor")
 		DEFAULT_CHAT_FRAME:AddMessage("    version - Show verbose version information")		
-	else 
-		-- Command missing/error, display usage
-		DEFAULT_CHAT_FRAME:AddMessage("Usage: /pp command [options]", 1, 1, 0) 			
-		DEFAULT_CHAT_FRAME:AddMessage("       /pp help (for more information)", 1, 1, 0) 			
 	end			
 end
 
+---------------------
+-- Item Filtering ---
+---------------------
+local function isUsable( Item )
+	class, subclass = select(6, GetItemInfo( Item ))
+	
+	if class == "Weapon" then 		
+		if 	subclass == "One-Handed Maces" or 
+			subclass == "Staves" or
+			subclass == "Daggers" or
+			subclass == "Wands"
+		then return true end
+	elseif class == "Armor" then 	
+		if 	subclass == "Miscellaneous" or 
+			subclass == "Cloth"
+		then return true end
+	elseif class == "Gem" then 
+		return true
+	else					
+		-- Everything Else
+		return false
+	end
+	
+end
 
 -------------------
 -- Toptip Script --
 -------------------
 local function OnTooltipSetItem(self)
 	local _, Item = self:GetItem()
-	local _, _, rarity, _, _, _, _, _, _ = GetItemInfo(Item)
-	if Item and rarity > quality_threshold then
+	local _, _, itemQuality, _, _, _, _, _, _ = GetItemInfo(Item)
+	if Item and itemQuality > quality_threshold and isUsable(Item) then
  		local pp, pph, _ = GetValue(Item)
 		if pp then		
 			-- Show optimizations
 			self:AddLine(" ")
 			
 			-- Hit value hilight color
-			_, hitBal = HitCap()
-			if hitBal > 0 then hilight = orange else hilight = grey end
+			hitCap, hitSum = HitCap()
+			if (hitCap - hitSum) > 0 then hilight = orange else hilight = grey end
 		 		
  			-- Display the PseudoPower of the item as-is
  			if pp then
